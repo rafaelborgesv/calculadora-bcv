@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Calculadora de Divisas</title>
+  <title>Calculadora de Divisas y Comisión</title>
   <style>
     * {
       box-sizing: border-box;
@@ -41,11 +41,11 @@
 
     .tab-btn {
       flex: 1;
-      padding: 10px 8px;
+      padding: 12px 8px;
       border: none;
       border-radius: 12px;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       color: #5a6878;
       background: transparent;
       cursor: pointer;
@@ -56,13 +56,19 @@
       gap: 6px;
     }
 
-    .tab-btn.active {
+    .tab-btn.active-bcv {
       background-color: #0d8f58;
       color: #ffffff;
       box-shadow: 0 2px 6px rgba(13, 143, 88, 0.3);
     }
 
-    /* Encabezado */
+    .tab-btn.active-comision {
+      background-color: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Encabezados */
     .header {
       text-align: center;
       margin-bottom: 20px;
@@ -80,7 +86,7 @@
       color: #7a889b;
     }
 
-    /* Tarjeta de Tasas */
+    /* Vista 1: Tasas BCV */
     .rates-card {
       background-color: #f8fafc;
       border: 1px solid #eef2f6;
@@ -103,29 +109,11 @@
       background-color: #e2e8f0;
     }
 
-    .rate-title-usd {
-      font-size: 13px;
-      font-weight: 700;
-      color: #0d8f58;
-      letter-spacing: 0.3px;
-      margin-bottom: 4px;
-    }
+    .rate-title-usd { font-size: 12px; font-weight: 800; color: #0d8f58; margin-bottom: 4px; }
+    .rate-title-eur { font-size: 12px; font-weight: 800; color: #2563eb; margin-bottom: 4px; }
+    .rate-value { font-size: 20px; font-weight: 800; color: #1a2332; }
 
-    .rate-title-eur {
-      font-size: 13px;
-      font-weight: 700;
-      color: #2563eb;
-      letter-spacing: 0.3px;
-      margin-bottom: 4px;
-    }
-
-    .rate-value {
-      font-size: 20px;
-      font-weight: 800;
-      color: #1a2332;
-    }
-
-    /* Entrada de Monto */
+    /* Inputs */
     .input-group {
       margin-bottom: 20px;
     }
@@ -144,18 +132,17 @@
       background-color: #f8fafc;
       border: 1.5px solid #e2e8f0;
       border-radius: 14px;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
       color: #1a2332;
       outline: none;
-      transition: border-color 0.2s ease;
     }
 
     .amount-input:focus {
-      border-color: #0d8f58;
+      border-color: #2563eb;
     }
 
-    /* Grilla de Botones */
+    /* Botones */
     .buttons-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -171,19 +158,27 @@
       font-weight: 700;
       color: #ffffff;
       cursor: pointer;
-      transition: transform 0.1s ease, opacity 0.2s ease;
-    }
-
-    .action-btn:active {
-      transform: scale(0.98);
     }
 
     .btn-usd-bs { background-color: #0d8f58; }
     .btn-eur-bs { background-color: #2563eb; }
     .btn-bs-conv { background-color: #1e293b; }
 
-    /* Tarjeta de Resultado */
-    .result-card {
+    .btn-full-blue {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      background-color: #2563eb;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    /* Tarjetas de Resultado */
+    .result-card-single {
       background-color: #eefcf4;
       border: 1px solid #c6f6d5;
       border-radius: 16px;
@@ -204,6 +199,48 @@
       font-weight: 800;
       color: #1a2332;
     }
+
+    /* Tarjeta Resultado Comisión */
+    .result-card-comision {
+      background-color: #f0f6ff;
+      border: 1px solid #dbeafe;
+      border-radius: 16px;
+      padding: 16px;
+      display: none; /* Oculta por defecto */
+    }
+
+    .comision-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+    }
+
+    .comision-label-blue {
+      font-size: 12px;
+      font-weight: 800;
+      color: #2563eb;
+      letter-spacing: 0.5px;
+    }
+
+    .comision-label-dark {
+      font-size: 12px;
+      font-weight: 800;
+      color: #1e293b;
+      letter-spacing: 0.5px;
+    }
+
+    .comision-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: #1a2332;
+    }
+
+    .comision-divider {
+      height: 1px;
+      background-color: #dbeafe;
+      margin: 8px 0;
+    }
   </style>
 </head>
 <body>
@@ -212,143 +249,167 @@
     
     <!-- Pestañas Superiores -->
     <div class="tabs-container">
-      <button class="tab-btn active" id="tabBcv" onclick="seleccionarModo('bcv')">💵 Tasas BCV</button>
-      <button class="tab-btn" id="tabComision" onclick="seleccionarModo('comision')">🏦 Comisión 0.3%</button>
+      <button class="tab-btn active-bcv" id="tabBcv" onclick="mostrarVista('bcv')">💵 Tasas BCV</button>
+      <button class="tab-btn" id="tabComision" onclick="mostrarVista('comision')">🏦 Comisión 0.3%</button>
     </div>
 
-    <!-- Título y Fecha -->
-    <div class="header">
-      <h1>Calculadora de Divisas</h1>
-      <p id="lblFecha">Tasas oficiales BCV al: --/--/----</p>
-    </div>
-
-    <!-- Cuadro de Tasas Actuales -->
-    <div class="rates-card">
-      <div class="rate-box">
-        <div class="rate-title-usd">DÓLAR (USD)</div>
-        <div class="rate-value" id="valUsd">--.-- Bs</div>
+    <!-- ================= VISTA 1: TASAS BCV ================= -->
+    <div id="vistaBcv">
+      <div class="header">
+        <h1>Calculadora de Divisas</h1>
+        <p id="lblFecha">Tasas oficiales BCV al: --/--/----</p>
       </div>
-      <div class="rate-divider"></div>
-      <div class="rate-box">
-        <div class="rate-title-eur">EURO (EUR)</div>
-        <div class="rate-value" id="valEur">--.-- Bs</div>
+
+      <div class="rates-card">
+        <div class="rate-box">
+          <div class="rate-title-usd">DÓLAR (USD)</div>
+          <div class="rate-value" id="valUsd">--.-- Bs</div>
+        </div>
+        <div class="rate-divider"></div>
+        <div class="rate-box">
+          <div class="rate-title-eur">EURO (EUR)</div>
+          <div class="rate-value" id="valEur">--.-- Bs</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Monto Neto a Convertir</label>
+        <input type="number" id="txtMontoBcv" class="amount-input" value="" placeholder="0.00">
+      </div>
+
+      <div class="buttons-grid">
+        <button class="action-btn btn-usd-bs" onclick="convertirDivisa('USD_BS')">USD a Bs</button>
+        <button class="action-btn btn-bs-conv" onclick="convertirDivisa('BS_USD')">Bs a USD</button>
+        <button class="action-btn btn-eur-bs" onclick="convertirDivisa('EUR_BS')">EUR a Bs</button>
+        <button class="action-btn btn-bs-conv" onclick="convertirDivisa('BS_EUR')">Bs a EUR</button>
+      </div>
+
+      <div class="result-card-single">
+        <div class="result-subtitle">CONVERSIÓN INMEDIATA</div>
+        <div class="result-value" id="valResultadoBcv">0.00 Bs</div>
       </div>
     </div>
 
-    <!-- Campo de Entrada -->
-    <div class="input-group">
-      <label class="input-label">Monto Neto a Convertir</label>
-      <input type="number" id="txtMonto" class="amount-input" value="" placeholder="0.00">
-    </div>
+    <!-- ================= VISTA 2: COMISIÓN BANCARIA ================= -->
+    <div id="vistaComision" style="display: none;">
+      <div class="header">
+        <h1>Comisión Bancaria</h1>
+        <p>Cálculo plano basado en tarifa de 0.3%</p>
+      </div>
 
-    <!-- Botones de Acción -->
-    <div class="buttons-grid">
-      <button class="action-btn btn-usd-bs" onclick="convertir('USD_BS')">USD a Bs</button>
-      <button class="action-btn btn-bs-conv" onclick="convertir('BS_USD')">Bs a USD</button>
-      <button class="action-btn btn-eur-bs" onclick="convertir('EUR_BS')">EUR a Bs</button>
-      <button class="action-btn btn-bs-conv" onclick="convertir('BS_EUR')">Bs a EUR</button>
-    </div>
+      <div class="input-group">
+        <label class="input-label">Monto de la Operación</label>
+        <input type="number" id="txtMontoComision" class="amount-input" value="" placeholder="Monto transferido">
+      </div>
 
-    <!-- Resultado -->
-    <div class="result-card">
-      <div class="result-subtitle">CONVERSIÓN INMEDIATA</div>
-      <div class="result-value" id="valResultado">0.00 Bs</div>
+      <button class="btn-full-blue" onclick="calcularComisionBancaria()">Calcular Comisión</button>
+
+      <div class="result-card-comision" id="cardResultadoComision">
+        <div class="comision-row">
+          <span class="comision-label-blue">COMISIÓN (0.3%):</span>
+          <span class="comision-val" id="lblMontoComision">0.00 Bs</span>
+        </div>
+        <div class="comision-divider"></div>
+        <div class="comision-row">
+          <span class="comision-label-dark">MONTO TOTAL + COMISIÓN:</span>
+          <span class="comision-val" id="lblMontoTotal">0.00 Bs</span>
+        </div>
+      </div>
     </div>
 
   </div>
 
   <script>
-  // Configuración del Endpoint
-  const API_URL = "https://script.google.com/macros/s/AKfycbymLInmOJa9sPeQcZtRb2A-UmUiYyKWRIRdave7HkKBUCtxdXZiwryeRDcPmbPsuSyLaA/exec";
+    const API_URL = "https://script.google.com/macros/s/TU_SCRIPT_ID/exec";
 
-  // Variables de Estado
-  let tasaUsd = 784.66;  // Valor de respaldo inicial
-  let tasaEur = 916.01;  // Valor de respaldo inicial
-  let modoActual = 'bcv';
+    let tasaUsd = 784.66;
+    let tasaEur = 916.01;
 
-  // Cargar datos al iniciar
-  window.onload = function() {
-    const fechaHoy = new Date().toLocaleDateString('es-VE');
-    document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${fechaHoy}`;
-    
-    // Obtener tasas actualizadas desde Google Apps Script
-    obtenerTasasDesdeScript();
-    
-    // Dejar la pantalla en blanco (0.00 Bs) al cargar
-    document.getElementById('valResultado').innerText = "0.00 Bs";
-  };
+    window.onload = function() {
+      const fechaHoy = new Date().toLocaleDateString('es-VE');
+      document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${fechaHoy}`;
+      obtenerTasasDesdeScript();
+    };
 
-  function obtenerTasasDesdeScript() {
-    if (API_URL.includes("TU_SCRIPT_ID")) {
-      actualizarPantallaTasas();
-      return;
+    function obtenerTasasDesdeScript() {
+      if (API_URL.includes("TU_SCRIPT_ID")) return;
+
+      fetch(API_URL)
+        .then(response => response.json())
+        .then(data => {
+          if (data.usd) tasaUsd = parseFloat(data.usd);
+          if (data.eur) tasaEur = parseFloat(data.eur);
+          if (data.fecha) document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${data.fecha}`;
+          document.getElementById('valUsd').innerText = tasaUsd.toFixed(2) + " Bs";
+          document.getElementById('valEur').innerText = tasaEur.toFixed(2) + " Bs";
+        })
+        .catch(error => console.warn("Usando tasas de respaldo:", error));
     }
 
-    fetch(API_URL)
-      .then(response => response.json())
-      .then(data => {
-        if (data.usd) tasaUsd = parseFloat(data.usd);
-        if (data.eur) tasaEur = parseFloat(data.eur);
-        if (data.fecha) document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${data.fecha}`;
-        actualizarPantallaTasas();
-      })
-      .catch(error => {
-        console.warn("Usando tasas de respaldo por error de conexión:", error);
-        actualizarPantallaTasas();
-      });
-  }
+    // Cambiar entre Pestañas
+    function mostrarVista(vista) {
+      const tabBcv = document.getElementById('tabBcv');
+      const tabComision = document.getElementById('tabComision');
+      const vistaBcv = document.getElementById('vistaBcv');
+      const vistaComision = document.getElementById('vistaComision');
 
-  function actualizarPantallaTasas() {
-    const factor = (modoActual === 'comision') ? 1.003 : 1.0;
-    document.getElementById('valUsd').innerText = (tasaUsd * factor).toFixed(2) + " Bs";
-    document.getElementById('valEur').innerText = (tasaEur * factor).toFixed(2) + " Bs";
-  }
-
-  function seleccionarModo(modo) {
-    modoActual = modo;
-    document.getElementById('tabBcv').classList.toggle('active', modo === 'bcv');
-    document.getElementById('tabComision').classList.toggle('active', modo === 'comision');
-    actualizarPantallaTasas();
-  }
-
-  // Esta función SOLO se ejecuta al hacer clic en uno de los 4 botones
-  function convertir(operacion) {
-    const monto = parseFloat(document.getElementById('txtMonto').value);
-
-    // Si el usuario no ha escrito nada, mantenemos el resultado en 0.00
-    if (isNaN(monto) || monto <= 0) {
-      document.getElementById('valResultado').innerText = "0.00 Bs";
-      return;
+      if (vista === 'bcv') {
+        tabBcv.className = 'tab-btn active-bcv';
+        tabComision.className = 'tab-btn';
+        vistaBcv.style.display = 'block';
+        vistaComision.style.display = 'none';
+      } else {
+        tabBcv.className = 'tab-btn';
+        tabComision.className = 'tab-btn active-comision';
+        vistaBcv.style.display = 'none';
+        vistaComision.style.display = 'block';
+      }
     }
 
-    const factorComision = (modoActual === 'comision') ? 1.003 : 1.0;
-    const usdEfectivo = tasaUsd * factorComision;
-    const eurEfectivo = tasaEur * factorComision;
+    // Lógica Vista 1: Divisas
+    function convertirDivisa(operacion) {
+      const monto = parseFloat(document.getElementById('txtMontoBcv').value);
 
-    let resultado = 0;
-    let moneda = "Bs";
+      if (isNaN(monto) || monto <= 0) {
+        document.getElementById('valResultadoBcv').innerText = "0.00 Bs";
+        return;
+      }
 
-    switch (operacion) {
-      case 'USD_BS':
-        resultado = monto * usdEfectivo;
-        moneda = "Bs";
-        break;
-      case 'BS_USD':
-        resultado = monto / usdEfectivo;
-        moneda = "USD";
-        break;
-      case 'EUR_BS':
-        resultado = monto * eurEfectivo;
-        moneda = "Bs";
-        break;
-      case 'BS_EUR':
-        resultado = monto / eurEfectivo;
-        moneda = "EUR";
-        break;
+      let resultado = 0;
+      let moneda = "Bs";
+
+      switch (operacion) {
+        case 'USD_BS': resultado = monto * tasaUsd; moneda = "Bs"; break;
+        case 'BS_USD': resultado = monto / tasaUsd; moneda = "USD"; break;
+        case 'EUR_BS': resultado = monto * tasaEur; moneda = "Bs"; break;
+        case 'BS_EUR': resultado = monto / tasaEur; moneda = "EUR"; break;
+      }
+
+      document.getElementById('valResultadoBcv').innerText = `${resultado.toFixed(2)} ${moneda}`;
     }
 
-    document.getElementById('valResultado').innerText = `${resultado.toFixed(2)} ${moneda}`;
-  }
-</script>
+    // Lógica Vista 2: Comisión 0.3% con Mínimo de 14.00 Bs
+    function calcularComisionBancaria() {
+      const monto = parseFloat(document.getElementById('txtMontoComision').value);
+      const cardResultado = document.getElementById('cardResultadoComision');
+
+      if (isNaN(monto) || monto <= 0) {
+        cardResultado.style.display = 'none';
+        return;
+      }
+
+      // Regla: 0.3% o un mínimo absoluto de 14.00 Bs
+      let comision = monto * 0.003;
+      if (comision < 14) {
+        comision = 14.00;
+      }
+
+      const total = monto + comision;
+
+      document.getElementById('lblMontoComision').innerText = `${comision.toFixed(2)} Bs`;
+      document.getElementById('lblMontoTotal').innerText = `${total.toFixed(2)} Bs`;
+      cardResultado.style.display = 'block';
+    }
+  </script>
 </body>
 </html>
