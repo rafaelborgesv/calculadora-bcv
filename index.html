@@ -238,7 +238,7 @@
     <!-- Campo de Entrada -->
     <div class="input-group">
       <label class="input-label">Monto Neto a Convertir</label>
-      <input type="number" id="txtMonto" class="amount-input" value="10" placeholder="0.00" oninput="recalcular()">
+      <input type="number" id="txtMonto" class="amount-input" value="" placeholder="0.00" oninput="recalcular()">
     </div>
 
     <!-- Botones de Acción -->
@@ -270,15 +270,14 @@
 
     // Cargar datos al iniciar
     window.onload = function() {
-      const fechaHoy = new Date().toLocaleDateString('es-VE');
-      document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${fechaHoy}`;
-      
-      // Intentar consultar el servidor de Google Apps Script
-      obtenerTasasDesdeScript();
-      
-      // Primera conversión automática
-      recalcular();
-    };
+  const fechaHoy = new Date().toLocaleDateString('es-VE');
+  document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${fechaHoy}`;
+  
+  obtenerTasasDesdeScript();
+  
+  // Limpia el resultado en pantalla al iniciar
+  document.getElementById('valResultado').innerText = "0.00 Bs";
+};
 
     function obtenerTasasDesdeScript() {
       if (API_URL.includes("TU_SCRIPT_ID")) {
@@ -294,7 +293,6 @@
           if (data.eur) tasaEur = parseFloat(data.eur);
           if (data.fecha) document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${data.fecha}`;
           actualizarPantallaTasas();
-          recalcular();
         })
         .catch(error => {
           console.warn("Usando tasas de respaldo por error de conexión:", error);
