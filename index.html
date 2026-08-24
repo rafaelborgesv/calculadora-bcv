@@ -238,7 +238,7 @@
     <!-- Campo de Entrada -->
     <div class="input-group">
       <label class="input-label">Monto Neto a Convertir</label>
-      <input type="number" id="txtMonto" class="amount-input" value="" placeholder="0.00" oninput="recalcular()">
+      <input type="number" id="txtMonto" class="amount-input" value="" placeholder="0.00">
     </div>
 
     <!-- Botones de Acción -->
@@ -258,98 +258,97 @@
   </div>
 
   <script>
-    // Configuración del Endpoint
-    // Reemplaza esta URL con la tuya cuando vayas a conectar Google Apps Script
-    const API_URL = "https://script.google.com/macros/s/AKfycbymLInmOJa9sPeQcZtRb2A-UmUiYyKWRIRdave7HkKBUCtxdXZiwryeRDcPmbPsuSyLaA/exec";
+  // Configuración del Endpoint
+  const API_URL = "https://script.google.com/macros/s/AKfycbymLInmOJa9sPeQcZtRb2A-UmUiYyKWRIRdave7HkKBUCtxdXZiwryeRDcPmbPsuSyLaA/exec";
 
-    // Variables de Estado
-    let tasaUsd = 779.95;  // Valor de respaldo inicial
-    let tasaEur = 911.22;  // Valor de respaldo inicial
-    let modoActual = 'bcv';
-    let operacionActual = 'EUR_BS';
+  // Variables de Estado
+  let tasaUsd = 784.66;  // Valor de respaldo inicial
+  let tasaEur = 916.01;  // Valor de respaldo inicial
+  let modoActual = 'bcv';
 
-    // Cargar datos al iniciar
-    window.onload = function() {
-  const fechaHoy = new Date().toLocaleDateString('es-VE');
-  document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${fechaHoy}`;
-  
-  obtenerTasasDesdeScript();
-  
-  // Limpia el resultado en pantalla al iniciar
-  document.getElementById('valResultado').innerText = "0.00 Bs";
-};
+  // Cargar datos al iniciar
+  window.onload = function() {
+    const fechaHoy = new Date().toLocaleDateString('es-VE');
+    document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${fechaHoy}`;
+    
+    // Obtener tasas actualizadas desde Google Apps Script
+    obtenerTasasDesdeScript();
+    
+    // Dejar la pantalla en blanco (0.00 Bs) al cargar
+    document.getElementById('valResultado').innerText = "0.00 Bs";
+  };
 
-    function obtenerTasasDesdeScript() {
-      if (API_URL.includes("TU_SCRIPT_ID")) {
-        // Muestra datos iniciales de prueba si aún no ha cambiado la URL
-        actualizarPantallaTasas();
-        return;
-      }
-
-      fetch(API_URL)
-        .then(response => response.json())
-        .then(data => {
-          if (data.usd) tasaUsd = parseFloat(data.usd);
-          if (data.eur) tasaEur = parseFloat(data.eur);
-          if (data.fecha) document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${data.fecha}`;
-          actualizarPantallaTasas();
-        })
-        .catch(error => {
-          console.warn("Usando tasas de respaldo por error de conexión:", error);
-          actualizarPantallaTasas();
-        });
-    }
-
-    function actualizarPantallaTasas() {
-      const factor = (modoActual === 'comision') ? 1.003 : 1.0;
-      document.getElementById('valUsd').innerText = (tasaUsd * factor).toFixed(2) + " Bs";
-      document.getElementById('valEur').innerText = (tasaEur * factor).toFixed(2) + " Bs";
-    }
-
-    function seleccionarModo(modo) {
-      modoActual = modo;
-      document.getElementById('tabBcv').classList.toggle('active', modo === 'bcv');
-      document.getElementById('tabComision').classList.toggle('active', modo === 'comision');
+  function obtenerTasasDesdeScript() {
+    if (API_URL.includes("TU_SCRIPT_ID")) {
       actualizarPantallaTasas();
-      recalcular();
+      return;
     }
 
-    function convertir(operacion) {
-      operacionActual = operacion;
-      recalcular();
+    fetch(API_URL)
+      .then(response => response.json())
+      .then(data => {
+        if (data.usd) tasaUsd = parseFloat(data.usd);
+        if (data.eur) tasaEur = parseFloat(data.eur);
+        if (data.fecha) document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${data.fecha}`;
+        actualizarPantallaTasas();
+      })
+      .catch(error => {
+        console.warn("Usando tasas de respaldo por error de conexión:", error);
+        actualizarPantallaTasas();
+      });
+  }
+
+  function actualizarPantallaTasas() {
+    const factor = (modoActual === 'comision') ? 1.003 : 1.0;
+    document.getElementById('valUsd').innerText = (tasaUsd * factor).toFixed(2) + " Bs";
+    document.getElementById('valEur').innerText = (tasaEur * factor).toFixed(2) + " Bs";
+  }
+
+  function seleccionarModo(modo) {
+    modoActual = modo;
+    document.getElementById('tabBcv').classList.toggle('active', modo === 'bcv');
+    document.getElementById('tabComision').classList.toggle('active', modo === 'comision');
+    actualizarPantallaTasas();
+  }
+
+  // Esta función SOLO se ejecuta al hacer clic en uno de los 4 botones
+  function convertir(operacion) {
+    const monto = parseFloat(document.getElementById('txtMonto').value);
+
+    // Si el usuario no ha escrito nada, mantenemos el resultado en 0.00
+    if (isNaN(monto) || monto <= 0) {
+      document.getElementById('valResultado').innerText = "0.00 Bs";
+      return;
     }
 
-    function recalcular() {
-      const monto = parseFloat(document.getElementById('txtMonto').value) || 0;
-      const factorComision = (modoActual === 'comision') ? 1.003 : 1.0;
-      
-      const usdEfectivo = tasaUsd * factorComision;
-      const eurEfectivo = tasaEur * factorComision;
+    const factorComision = (modoActual === 'comision') ? 1.003 : 1.0;
+    const usdEfectivo = tasaUsd * factorComision;
+    const eurEfectivo = tasaEur * factorComision;
 
-      let resultado = 0;
-      let moneda = "Bs";
+    let resultado = 0;
+    let moneda = "Bs";
 
-      switch (operacionActual) {
-        case 'USD_BS':
-          resultado = monto * usdEfectivo;
-          moneda = "Bs";
-          break;
-        case 'BS_USD':
-          resultado = monto / usdEfectivo;
-          moneda = "USD";
-          break;
-        case 'EUR_BS':
-          resultado = monto * eurEfectivo;
-          moneda = "Bs";
-          break;
-        case 'BS_EUR':
-          resultado = monto / eurEfectivo;
-          moneda = "EUR";
-          break;
-      }
-
-      document.getElementById('valResultado').innerText = `${resultado.toFixed(2)} ${moneda}`;
+    switch (operacion) {
+      case 'USD_BS':
+        resultado = monto * usdEfectivo;
+        moneda = "Bs";
+        break;
+      case 'BS_USD':
+        resultado = monto / usdEfectivo;
+        moneda = "USD";
+        break;
+      case 'EUR_BS':
+        resultado = monto * eurEfectivo;
+        moneda = "Bs";
+        break;
+      case 'BS_EUR':
+        resultado = monto / eurEfectivo;
+        moneda = "EUR";
+        break;
     }
-  </script>
+
+    document.getElementById('valResultado').innerText = `${resultado.toFixed(2)} ${moneda}`;
+  }
+</script>
 </body>
 </html>
