@@ -34,7 +34,7 @@
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     }
 
-    /* Pestañas superiores */
+    /* Pestañas superiores principales */
     .tabs-container {
       display: flex;
       background-color: #f0f3f7;
@@ -77,6 +77,35 @@
       background-color: #0070ba;
       color: #ffffff;
       box-shadow: 0 2px 6px rgba(0, 112, 186, 0.3);
+    }
+
+    /* Sub-pestañas internas de PayPal */
+    .subtabs-container {
+      display: flex;
+      background-color: #e2e8f0;
+      padding: 3px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      gap: 4px;
+    }
+
+    .subtab-btn {
+      flex: 1;
+      padding: 8px 4px;
+      border: none;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .subtab-btn.active-subtab {
+      background-color: #ffffff;
+      color: #0070ba;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
     }
 
     /* Encabezados */
@@ -262,22 +291,25 @@
       display: none;
     }
 
-    .paypal-box {
-      margin-bottom: 12px;
+    .paypal-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
     }
 
-    .paypal-title {
-      font-size: 11px;
+    .paypal-label {
+      font-size: 12px;
       font-weight: 800;
       color: #0070ba;
       letter-spacing: 0.5px;
-      margin-bottom: 4px;
     }
 
-    .paypal-val {
-      font-size: 20px;
+    .paypal-main-val {
+      font-size: 22px;
       font-weight: 800;
       color: #1a2332;
+      margin-top: 4px;
     }
 
     .paypal-subval {
@@ -370,24 +402,27 @@
         <p>Comisión estándar: 5.4% + $0.30 USD</p>
       </div>
 
+      <!-- Selector de Modo dentro de PayPal -->
+      <div class="subtabs-container">
+        <button class="subtab-btn active-subtab" id="subtabRecibir" onclick="cambiarModoPaypal('recibir')">📥 Quiero Recibir</button>
+        <button class="subtab-btn" id="subtabEnviar" onclick="cambiarModoPaypal('enviar')">📤 Voy a Enviar</button>
+      </div>
+
       <div class="input-group">
-        <label class="input-label">Monto en Dólares (USD)</label>
+        <label class="input-label" id="lblInputPaypal">Monto exacto a recibir ($)</label>
         <input type="number" id="txtMontoPaypal" class="amount-input" value="" placeholder="10.00" oninput="calcularPaypal()">
       </div>
 
       <div class="result-card-paypal" id="cardResultadoPaypal">
-        <div class="paypal-box">
-          <div class="paypal-title">PARA RECIBIR ESE MONTO NETO DEBEN ENVIARTE:</div>
-          <div class="paypal-val" id="lblPaypalParaRecibir">$0.00 USD</div>
-          <div class="paypal-subval" id="lblPaypalParaRecibirBs">~ 0.00 Bs (BCV)</div>
-        </div>
-        
-        <div class="comision-divider"></div>
-        
-        <div class="paypal-box" style="margin-bottom: 0; margin-top: 10px;">
-          <div class="paypal-title">SI ENVIAS ESE MONTO, AL DESTINATARIO LE LLEGA:</div>
-          <div class="paypal-val" id="lblPaypalAlEnviar">$0.00 USD</div>
-          <div class="paypal-subval" id="lblPaypalAlEnviarBs">~ 0.00 Bs (BCV)</div>
+        <div class="paypal-label" id="lblPaypalTituloResultado">DEBEN ENVIARTE:</div>
+        <div class="paypal-main-val" id="lblPaypalResultadoUsd">$0.00 USD</div>
+        <div class="paypal-subval" id="lblPaypalResultadoBs">~ 0.00 Bs (BCV)</div>
+
+        <div class="comision-divider" style="margin: 12px 0;"></div>
+
+        <div class="paypal-row">
+          <span style="font-size: 12px; color: #5a6878; font-weight: 600;">Comisión retenida (5.4% + $0.30):</span>
+          <span style="font-size: 13px; color: #1a2332; font-weight: 800;" id="lblPaypalComisionUsd">$0.00 USD</span>
         </div>
       </div>
     </div>
@@ -413,6 +448,7 @@
 
     let tasaUsd = 784.66;
     let tasaEur = 916.01;
+    let modoPaypalActual = 'recibir'; // 'recibir' o 'enviar'
 
     window.onload = function() {
       const fechaHoy = new Date().toLocaleDateString('es-VE');
@@ -435,7 +471,7 @@
         .catch(error => console.warn("Usando tasas de respaldo:", error));
     }
 
-    // Cambiar entre Pestañas
+    // Cambiar entre Pestañas Principales
     function mostrarVista(vista) {
       const tabBcv = document.getElementById('tabBcv');
       const tabComision = document.getElementById('tabComision');
@@ -498,7 +534,28 @@
       cardResultado.style.display = 'block';
     }
 
-    // Lógica Vista 3: PayPal (En tiempo real con conversión a BCV)
+    // Cambiar entre sub-pestañas 'Recibir' y 'Enviar' en PayPal
+    function cambiarModoPaypal(modo) {
+      modoPaypalActual = modo;
+
+      const subtabRecibir = document.getElementById('subtabRecibir');
+      const subtabEnviar = document.getElementById('subtabEnviar');
+      const lblInput = document.getElementById('lblInputPaypal');
+
+      if (modo === 'recibir') {
+        subtabRecibir.className = 'subtab-btn active-subtab';
+        subtabEnviar.className = 'subtab-btn';
+        lblInput.innerText = "Monto exacto que quieres recibir ($)";
+      } else {
+        subtabRecibir.className = 'subtab-btn';
+        subtabEnviar.className = 'subtab-btn active-subtab';
+        lblInput.innerText = "Monto bruto que vas a enviar ($)";
+      }
+
+      calcularPaypal();
+    }
+
+    // Lógica Vista 3: PayPal (Separado según modo activo)
     function calcularPaypal() {
       const monto = parseFloat(document.getElementById('txtMontoPaypal').value);
       const cardResultado = document.getElementById('cardResultadoPaypal');
@@ -511,20 +568,28 @@
       const porcentaje = 0.054;
       const fijo = 0.30;
 
-      // 1. Cuánto deben enviarte para recibir 'monto' neto
-      const aEnviar = (monto + fijo) / (1 - porcentaje);
-      const aEnviarBs = aEnviar * tasaUsd;
+      let resultadoUsd = 0;
+      let comisionUsd = 0;
 
-      // 2. Cuánto llega si envías 'monto' bruto
-      const comisionEnviar = (monto * porcentaje) + fijo;
-      const llega = Math.max(0, monto - comisionEnviar);
-      const llegaBs = llega * tasaUsd;
+      if (modoPaypalActual === 'recibir') {
+        // Cálculo para RECIBIR N monto exacto
+        resultadoUsd = (monto + fijo) / (1 - porcentaje);
+        comisionUsd = resultadoUsd - monto;
 
-      document.getElementById('lblPaypalParaRecibir').innerText = `$${aEnviar.toFixed(2)} USD`;
-      document.getElementById('lblPaypalParaRecibirBs').innerText = `~ ${aEnviarBs.toFixed(2)} Bs (BCV)`;
+        document.getElementById('lblPaypalTituloResultado').innerText = "PARA RECIBIR ESE MONTO LIMPIO DEBEN ENVIARTE:";
+      } else {
+        // Cálculo para ENVIAR G monto bruto
+        comisionUsd = (monto * porcentaje) + fijo;
+        resultadoUsd = Math.max(0, monto - comisionUsd);
 
-      document.getElementById('lblPaypalAlEnviar').innerText = `$${llega.toFixed(2)} USD`;
-      document.getElementById('lblPaypalAlEnviarBs').innerText = `~ ${llegaBs.toFixed(2)} Bs (BCV)`;
+        document.getElementById('lblPaypalTituloResultado').innerText = "SI ENVIAS ESE MONTO AL DESTINATARIO LE LLEGA:";
+      }
+
+      const resultadoBs = resultadoUsd * tasaUsd;
+
+      document.getElementById('lblPaypalResultadoUsd').innerText = `$${resultadoUsd.toFixed(2)} USD`;
+      document.getElementById('lblPaypalResultadoBs').innerText = `~ ${resultadoBs.toFixed(2)} Bs (BCV)`;
+      document.getElementById('lblPaypalComisionUsd').innerText = `$${comisionUsd.toFixed(2)} USD`;
 
       cardResultado.style.display = 'block';
     }
