@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Calculadora de Divisas y Comisión</title>
+  <title>Calculadora de Divisas, Comisión y PayPal</title>
 
   <!-- Icono para la pestaña del navegador -->
   <link rel="icon" type="image/png" href="favicon.png">
@@ -41,14 +41,15 @@
       padding: 4px;
       border-radius: 16px;
       margin-bottom: 20px;
+      gap: 2px;
     }
 
     .tab-btn {
       flex: 1;
-      padding: 12px 8px;
+      padding: 10px 4px;
       border: none;
       border-radius: 12px;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 700;
       color: #5a6878;
       background: transparent;
@@ -57,7 +58,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .tab-btn.active-bcv {
@@ -70,6 +71,12 @@
       background-color: #2563eb;
       color: #ffffff;
       box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+    }
+
+    .tab-btn.active-paypal {
+      background-color: #0070ba;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 112, 186, 0.3);
     }
 
     /* Encabezados */
@@ -210,7 +217,7 @@
       border: 1px solid #dbeafe;
       border-radius: 16px;
       padding: 16px;
-      display: none; /* Oculta por defecto */
+      display: none;
     }
 
     .comision-row {
@@ -245,6 +252,40 @@
       background-color: #dbeafe;
       margin: 8px 0;
     }
+
+    /* Tarjeta Resultado PayPal */
+    .result-card-paypal {
+      background-color: #f0f7ff;
+      border: 1px solid #cce3ff;
+      border-radius: 16px;
+      padding: 16px;
+      display: none;
+    }
+
+    .paypal-box {
+      margin-bottom: 12px;
+    }
+
+    .paypal-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #0070ba;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .paypal-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1a2332;
+    }
+
+    .paypal-subval {
+      font-size: 12px;
+      font-weight: 600;
+      color: #0d8f58;
+      margin-top: 2px;
+    }
   </style>
 </head>
 <body>
@@ -255,6 +296,7 @@
     <div class="tabs-container">
       <button class="tab-btn active-bcv" id="tabBcv" onclick="mostrarVista('bcv')">💵 Tasas BCV</button>
       <button class="tab-btn" id="tabComision" onclick="mostrarVista('comision')">🏦 Comisión 0.3%</button>
+      <button class="tab-btn" id="tabPaypal" onclick="mostrarVista('paypal')">🅿️ PayPal</button>
     </div>
 
     <!-- ================= VISTA 1: TASAS BCV ================= -->
@@ -320,6 +362,35 @@
         </div>
       </div>
     </div>
+
+    <!-- ================= VISTA 3: PAYPAL ================= -->
+    <div id="vistaPaypal" style="display: none;">
+      <div class="header">
+        <h1>Calculadora PayPal</h1>
+        <p>Comisión estándar: 5.4% + $0.30 USD</p>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Monto en Dólares (USD)</label>
+        <input type="number" id="txtMontoPaypal" class="amount-input" value="" placeholder="10.00" oninput="calcularPaypal()">
+      </div>
+
+      <div class="result-card-paypal" id="cardResultadoPaypal">
+        <div class="paypal-box">
+          <div class="paypal-title">PARA RECIBIR ESE MONTO NETO DEBEN ENVIARTE:</div>
+          <div class="paypal-val" id="lblPaypalParaRecibir">$0.00 USD</div>
+          <div class="paypal-subval" id="lblPaypalParaRecibirBs">~ 0.00 Bs (BCV)</div>
+        </div>
+        
+        <div class="comision-divider"></div>
+        
+        <div class="paypal-box" style="margin-bottom: 0; margin-top: 10px;">
+          <div class="paypal-title">SI ENVIAS ESE MONTO, AL DESTINATARIO LE LLEGA:</div>
+          <div class="paypal-val" id="lblPaypalAlEnviar">$0.00 USD</div>
+          <div class="paypal-subval" id="lblPaypalAlEnviarBs">~ 0.00 Bs (BCV)</div>
+        </div>
+      </div>
+    </div>
     
     <!-- Área de Publicidad -->
     <div class="ad-slot" style="text-align: center; margin-top: 15px;">
@@ -368,20 +439,19 @@
     function mostrarVista(vista) {
       const tabBcv = document.getElementById('tabBcv');
       const tabComision = document.getElementById('tabComision');
+      const tabPaypal = document.getElementById('tabPaypal');
+
       const vistaBcv = document.getElementById('vistaBcv');
       const vistaComision = document.getElementById('vistaComision');
+      const vistaPaypal = document.getElementById('vistaPaypal');
 
-      if (vista === 'bcv') {
-        tabBcv.className = 'tab-btn active-bcv';
-        tabComision.className = 'tab-btn';
-        vistaBcv.style.display = 'block';
-        vistaComision.style.display = 'none';
-      } else {
-        tabBcv.className = 'tab-btn';
-        tabComision.className = 'tab-btn active-comision';
-        vistaBcv.style.display = 'none';
-        vistaComision.style.display = 'block';
-      }
+      tabBcv.className = 'tab-btn' + (vista === 'bcv' ? ' active-bcv' : '');
+      tabComision.className = 'tab-btn' + (vista === 'comision' ? ' active-comision' : '');
+      tabPaypal.className = 'tab-btn' + (vista === 'paypal' ? ' active-paypal' : '');
+
+      vistaBcv.style.display = vista === 'bcv' ? 'block' : 'none';
+      vistaComision.style.display = vista === 'comision' ? 'block' : 'none';
+      vistaPaypal.style.display = vista === 'paypal' ? 'block' : 'none';
     }
 
     // Lógica Vista 1: Divisas
@@ -416,7 +486,6 @@
         return;
       }
 
-      // Regla: 0.3% o un mínimo absoluto de 14.00 Bs
       let comision = monto * 0.003;
       if (comision < 14) {
         comision = 14.00;
@@ -426,6 +495,37 @@
 
       document.getElementById('lblMontoComision').innerText = `${comision.toFixed(2)} Bs`;
       document.getElementById('lblMontoTotal').innerText = `${total.toFixed(2)} Bs`;
+      cardResultado.style.display = 'block';
+    }
+
+    // Lógica Vista 3: PayPal (En tiempo real con conversión a BCV)
+    function calcularPaypal() {
+      const monto = parseFloat(document.getElementById('txtMontoPaypal').value);
+      const cardResultado = document.getElementById('cardResultadoPaypal');
+
+      if (isNaN(monto) || monto <= 0) {
+        cardResultado.style.display = 'none';
+        return;
+      }
+
+      const porcentaje = 0.054;
+      const fijo = 0.30;
+
+      // 1. Cuánto deben enviarte para recibir 'monto' neto
+      const aEnviar = (monto + fijo) / (1 - porcentaje);
+      const aEnviarBs = aEnviar * tasaUsd;
+
+      // 2. Cuánto llega si envías 'monto' bruto
+      const comisionEnviar = (monto * porcentaje) + fijo;
+      const llega = Math.max(0, monto - comisionEnviar);
+      const llegaBs = llega * tasaUsd;
+
+      document.getElementById('lblPaypalParaRecibir').innerText = `$${aEnviar.toFixed(2)} USD`;
+      document.getElementById('lblPaypalParaRecibirBs').innerText = `~ ${aEnviarBs.toFixed(2)} Bs (BCV)`;
+
+      document.getElementById('lblPaypalAlEnviar').innerText = `$${llega.toFixed(2)} USD`;
+      document.getElementById('lblPaypalAlEnviarBs').innerText = `~ ${llegaBs.toFixed(2)} Bs (BCV)`;
+
       cardResultado.style.display = 'block';
     }
   </script>
