@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Calculadora de Divisas, Comisión y PayPal</title>
+  <title>Calculadora de Divisas y Comisiones para pagos digitales</title>
 
   <!-- Icono para la pestaña del navegador -->
   <link rel="icon" type="image/png" href="favicon.png">
@@ -74,7 +74,7 @@
     }
 
     .tab-btn.active-paypal {
-      background-color: #0070ba;
+      background-color: #0f766e;
       color: #ffffff;
       box-shadow: 0 2px 6px rgba(0, 112, 186, 0.3);
     }
@@ -328,7 +328,7 @@
     <div class="tabs-container">
       <button class="tab-btn active-bcv" id="tabBcv" onclick="mostrarVista('bcv')">💵 Tasas BCV</button>
       <button class="tab-btn" id="tabComision" onclick="mostrarVista('comision')">🏦 Comisión 0.3%</button>
-      <button class="tab-btn" id="tabPaypal" onclick="mostrarVista('paypal')">🅿️ PayPal</button>
+      <button class="tab-btn" id="tabPaypal" onclick="mostrarVista('paypal')">💳 Comisión USD</button>
     </div>
 
     <!-- ================= VISTA 1: TASAS BCV ================= -->
@@ -398,7 +398,7 @@
     <!-- ================= VISTA 3: PAYPAL ================= -->
     <div id="vistaPaypal" style="display: none;">
       <div class="header">
-        <h1>Calculadora PayPal</h1>
+        <h1>Calculadora de Comisión Digital</h1>
         <p>Comisión estándar: 5.4% + $0.30 USD</p>
       </div>
 
