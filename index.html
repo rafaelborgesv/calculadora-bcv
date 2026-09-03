@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Calculadora de Divisas y Comisiones para pagos digitales</title>
-
-  <!-- Icono para la pestaña del navegador -->
+  <title>Calculadora de Divisas y Comisiones</title>
   <link rel="icon" type="image/png" href="favicon.png">
   
   <style>
@@ -34,7 +32,6 @@
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     }
 
-    /* Pestañas superiores principales */
     .tabs-container {
       display: flex;
       background-color: #f0f3f7;
@@ -76,10 +73,9 @@
     .tab-btn.active-paypal {
       background-color: #0f766e;
       color: #ffffff;
-      box-shadow: 0 2px 6px rgba(0, 112, 186, 0.3);
+      box-shadow: 0 2px 6px rgba(15, 118, 110, 0.3);
     }
 
-    /* Sub-pestañas internas de PayPal */
     .subtabs-container {
       display: flex;
       background-color: #e2e8f0;
@@ -108,7 +104,6 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.08);
     }
 
-    /* Encabezados */
     .header {
       text-align: center;
       margin-bottom: 20px;
@@ -126,7 +121,6 @@
       color: #7a889b;
     }
 
-    /* Vista 1: Tasas BCV */
     .rates-card {
       background-color: #f8fafc;
       border: 1px solid #eef2f6;
@@ -151,9 +145,8 @@
 
     .rate-title-usd { font-size: 12px; font-weight: 800; color: #0d8f58; margin-bottom: 4px; }
     .rate-title-eur { font-size: 12px; font-weight: 800; color: #2563eb; margin-bottom: 4px; }
-    .rate-value { font-size: 20px; font-weight: 800; color: #1a2332; }
+    .rate-value { font-size: 18px; font-weight: 800; color: #1a2332; }
 
-    /* Inputs */
     .input-group {
       margin-bottom: 20px;
     }
@@ -182,7 +175,6 @@
       border-color: #2563eb;
     }
 
-    /* Botones */
     .buttons-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -191,33 +183,26 @@
     }
 
     .action-btn {
-      padding: 14px 8px;
-      border: none;
+      padding: 12px 8px;
+      border: 2px solid transparent;
       border-radius: 14px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       color: #ffffff;
       cursor: pointer;
+      transition: all 0.15s ease;
     }
 
     .btn-usd-bs { background-color: #0d8f58; }
     .btn-eur-bs { background-color: #2563eb; }
     .btn-bs-conv { background-color: #1e293b; }
 
-    .btn-full-blue {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 14px;
-      background-color: #2563eb;
-      color: #ffffff;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-bottom: 20px;
+    .action-btn.selected-op {
+      border-color: #1a2332;
+      box-shadow: inset 0 0 0 2px #ffffff;
+      transform: scale(0.98);
     }
 
-    /* Tarjetas de Resultado */
     .result-card-single {
       background-color: #eefcf4;
       border: 1px solid #c6f6d5;
@@ -240,7 +225,6 @@
       color: #1a2332;
     }
 
-    /* Tarjeta Resultado Comisión */
     .result-card-comision {
       background-color: #f0f6ff;
       border: 1px solid #dbeafe;
@@ -256,33 +240,11 @@
       padding: 6px 0;
     }
 
-    .comision-label-blue {
-      font-size: 12px;
-      font-weight: 800;
-      color: #2563eb;
-      letter-spacing: 0.5px;
-    }
+    .comision-label-blue { font-size: 12px; font-weight: 800; color: #2563eb; letter-spacing: 0.5px; }
+    .comision-label-dark { font-size: 12px; font-weight: 800; color: #1e293b; letter-spacing: 0.5px; }
+    .comision-val { font-size: 16px; font-weight: 800; color: #1a2332; }
+    .comision-divider { height: 1px; background-color: #dbeafe; margin: 8px 0; }
 
-    .comision-label-dark {
-      font-size: 12px;
-      font-weight: 800;
-      color: #1e293b;
-      letter-spacing: 0.5px;
-    }
-
-    .comision-val {
-      font-size: 16px;
-      font-weight: 800;
-      color: #1a2332;
-    }
-
-    .comision-divider {
-      height: 1px;
-      background-color: #dbeafe;
-      margin: 8px 0;
-    }
-
-    /* Tarjeta Resultado PayPal */
     .result-card-paypal {
       background-color: #f0f7ff;
       border: 1px solid #cce3ff;
@@ -298,26 +260,9 @@
       padding: 6px 0;
     }
 
-    .paypal-label {
-      font-size: 12px;
-      font-weight: 800;
-      color: #0070ba;
-      letter-spacing: 0.5px;
-    }
-
-    .paypal-main-val {
-      font-size: 22px;
-      font-weight: 800;
-      color: #1a2332;
-      margin-top: 4px;
-    }
-
-    .paypal-subval {
-      font-size: 12px;
-      font-weight: 600;
-      color: #0d8f58;
-      margin-top: 2px;
-    }
+    .paypal-label { font-size: 12px; font-weight: 800; color: #0070ba; letter-spacing: 0.5px; }
+    .paypal-main-val { font-size: 22px; font-weight: 800; color: #1a2332; margin-top: 4px; }
+    .paypal-subval { font-size: 12px; font-weight: 600; color: #0d8f58; margin-top: 2px; }
   </style>
 </head>
 <body>
@@ -331,7 +276,7 @@
       <button class="tab-btn" id="tabPaypal" onclick="mostrarVista('paypal')">💳 Comisión PYUSD</button>
     </div>
 
-    <!-- ================= VISTA 1: TASAS BCV ================= -->
+    <!-- VISTA 1: TASAS BCV -->
     <div id="vistaBcv">
       <div class="header">
         <h1>Calculadora de Divisas</h1>
@@ -352,71 +297,68 @@
 
       <div class="input-group">
         <label class="input-label">Monto Neto a Convertir</label>
-        <input type="number" id="txtMontoBcv" class="amount-input" value="" placeholder="0.00">
+        <input type="number" id="txtMontoBcv" class="amount-input" placeholder="0.00" oninput="convertirDivisa()">
       </div>
 
       <div class="buttons-grid">
-        <button class="action-btn btn-usd-bs" onclick="convertirDivisa('USD_BS')">USD a Bs</button>
-        <button class="action-btn btn-bs-conv" onclick="convertirDivisa('BS_USD')">Bs a USD</button>
-        <button class="action-btn btn-eur-bs" onclick="convertirDivisa('EUR_BS')">EUR a Bs</button>
-        <button class="action-btn btn-bs-conv" onclick="convertirDivisa('BS_EUR')">Bs a EUR</button>
+        <button class="action-btn btn-usd-bs selected-op" id="btn_USD_BS" onclick="seleccionarOperacionBCV('USD_BS')">USD a Bs</button>
+        <button class="action-btn btn-bs-conv" id="btn_BS_USD" onclick="seleccionarOperacionBCV('BS_USD')">Bs a USD</button>
+        <button class="action-btn btn-eur-bs" id="btn_EUR_BS" onclick="seleccionarOperacionBCV('EUR_BS')">EUR a Bs</button>
+        <button class="action-btn btn-bs-conv" id="btn_BS_EUR" onclick="seleccionarOperacionBCV('BS_EUR')">Bs a EUR</button>
       </div>
 
       <div class="result-card-single">
-        <div class="result-subtitle">CONVERSIÓN INMEDIATA</div>
-        <div class="result-value" id="valResultadoBcv">0.00 Bs</div>
+        <div class="result-subtitle" id="lblOperacionActiva">CONVERSIÓN INMEDIATA (USD ➔ Bs)</div>
+        <div class="result-value" id="valResultadoBcv">0,00 Bs</div>
       </div>
     </div>
 
-    <!-- ================= VISTA 2: COMISIÓN BANCARIA ================= -->
+    <!-- VISTA 2: COMISIÓN BANCARIA -->
     <div id="vistaComision" style="display: none;">
       <div class="header">
         <h1>Comisión Bancaria</h1>
-        <p>Cálculo plano basado en tarifa de 0.3%</p>
+        <p>Cálculo basado en 0.3% (Mínimo legal: 14.00 Bs)</p>
       </div>
 
       <div class="input-group">
-        <label class="input-label">Monto de la Operación</label>
-        <input type="number" id="txtMontoComision" class="amount-input" value="" placeholder="Monto transferido">
+        <label class="input-label">Monto de la Operación (Bs)</label>
+        <input type="number" id="txtMontoComision" class="amount-input" placeholder="0.00" oninput="calcularComisionBancaria()">
       </div>
-
-      <button class="btn-full-blue" onclick="calcularComisionBancaria()">Calcular Comisión</button>
 
       <div class="result-card-comision" id="cardResultadoComision">
         <div class="comision-row">
           <span class="comision-label-blue">COMISIÓN (0.3%):</span>
-          <span class="comision-val" id="lblMontoComision">0.00 Bs</span>
+          <span class="comision-val" id="lblMontoComision">0,00 Bs</span>
         </div>
         <div class="comision-divider"></div>
         <div class="comision-row">
           <span class="comision-label-dark">MONTO TOTAL + COMISIÓN:</span>
-          <span class="comision-val" id="lblMontoTotal">0.00 Bs</span>
+          <span class="comision-val" id="lblMontoTotal">0,00 Bs</span>
         </div>
       </div>
     </div>
 
-    <!-- ================= VISTA 3: PAYPAL ================= -->
+    <!-- VISTA 3: PAYPAL -->
     <div id="vistaPaypal" style="display: none;">
       <div class="header">
         <h1>Calculadora de Comisión Digital</h1>
         <p>Comisión estándar: 5.4% + $0.30 USD</p>
       </div>
 
-      <!-- Selector de Modo dentro de PayPal -->
       <div class="subtabs-container">
         <button class="subtab-btn active-subtab" id="subtabRecibir" onclick="cambiarModoPaypal('recibir')">📥 Quiero Recibir</button>
         <button class="subtab-btn" id="subtabEnviar" onclick="cambiarModoPaypal('enviar')">📤 Voy a Enviar</button>
       </div>
 
       <div class="input-group">
-        <label class="input-label" id="lblInputPaypal">Monto exacto a recibir ($)</label>
-        <input type="number" id="txtMontoPaypal" class="amount-input" value="" placeholder="0.00" oninput="calcularPaypal()">
+        <label class="input-label" id="lblInputPaypal">Monto exacto que quieres recibir ($)</label>
+        <input type="number" id="txtMontoPaypal" class="amount-input" placeholder="0.00" oninput="calcularPaypal()">
       </div>
 
       <div class="result-card-paypal" id="cardResultadoPaypal">
-        <div class="paypal-label" id="lblPaypalTituloResultado">DEBEN ENVIARTE:</div>
+        <div class="paypal-label" id="lblPaypalTituloResultado">PARA RECIBIR ESE MONTO LIMPIO DEBEN ENVIARTE:</div>
         <div class="paypal-main-val" id="lblPaypalResultadoUsd">$0.00 USD</div>
-        <div class="paypal-subval" id="lblPaypalResultadoBs">~ 0.00 Bs (BCV)</div>
+        <div class="paypal-subval" id="lblPaypalResultadoBs">~ 0,00 Bs (BCV)</div>
 
         <div class="comision-divider" style="margin: 12px 0;"></div>
 
@@ -427,10 +369,9 @@
       </div>
     </div>
     
-    <!-- Área de Publicidad -->
+    <!-- Publicidad -->
     <div class="ad-slot" style="text-align: center; margin-top: 15px;">
       <span class="ad-label" style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 5px;">PUBLICIDAD</span>
-  
       <iframe 
         src="ad.html" 
         width="320" 
@@ -449,71 +390,97 @@
 
     let tasaUsd = 784.66;
     let tasaEur = 916.01;
-    let modoPaypalActual = 'recibir'; // 'recibir' o 'enviar'
+    let operacionBcvActual = 'USD_BS';
+    let modoPaypalActual = 'recibir';
+
+    // Formateador regional para moneda venezolana (1.234,56)
+    const fmtBs = new Intl.NumberFormat('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmtUsd = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     window.onload = function() {
       const fechaHoy = new Date().toLocaleDateString('es-VE');
       document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${fechaHoy}`;
+      actualizarTarjetasTasas();
       obtenerTasasDesdeScript();
     };
 
-    function obtenerTasasDesdeScript() {
-      if (API_URL.includes("TU_SCRIPT_ID")) return;
+    function actualizarTarjetasTasas() {
+      document.getElementById('valUsd').innerText = `${fmtBs.format(tasaUsd)} Bs`;
+      document.getElementById('valEur').innerText = `${fmtBs.format(tasaEur)} Bs`;
+    }
 
+    function obtenerTasasDesdeScript() {
       fetch(API_URL)
         .then(response => response.json())
         .then(data => {
           if (data.usd) tasaUsd = parseFloat(data.usd);
           if (data.eur) tasaEur = parseFloat(data.eur);
           if (data.fecha) document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${data.fecha}`;
-          document.getElementById('valUsd').innerText = tasaUsd.toFixed(2) + " Bs";
-          document.getElementById('valEur').innerText = tasaEur.toFixed(2) + " Bs";
+          actualizarTarjetasTasas();
+          convertirDivisa();
         })
-        .catch(error => console.warn("Usando tasas de respaldo:", error));
+        .catch(error => console.warn("Usando tasas de respaldo por falla de red:", error));
     }
 
-    // Cambiar entre Pestañas Principales
     function mostrarVista(vista) {
-      const tabBcv = document.getElementById('tabBcv');
-      const tabComision = document.getElementById('tabComision');
-      const tabPaypal = document.getElementById('tabPaypal');
+      document.getElementById('tabBcv').className = 'tab-btn' + (vista === 'bcv' ? ' active-bcv' : '');
+      document.getElementById('tabComision').className = 'tab-btn' + (vista === 'comision' ? ' active-comision' : '');
+      document.getElementById('tabPaypal').className = 'tab-btn' + (vista === 'paypal' ? ' active-paypal' : '');
 
-      const vistaBcv = document.getElementById('vistaBcv');
-      const vistaComision = document.getElementById('vistaComision');
-      const vistaPaypal = document.getElementById('vistaPaypal');
-
-      tabBcv.className = 'tab-btn' + (vista === 'bcv' ? ' active-bcv' : '');
-      tabComision.className = 'tab-btn' + (vista === 'comision' ? ' active-comision' : '');
-      tabPaypal.className = 'tab-btn' + (vista === 'paypal' ? ' active-paypal' : '');
-
-      vistaBcv.style.display = vista === 'bcv' ? 'block' : 'none';
-      vistaComision.style.display = vista === 'comision' ? 'block' : 'none';
-      vistaPaypal.style.display = vista === 'paypal' ? 'block' : 'none';
+      document.getElementById('vistaBcv').style.display = vista === 'bcv' ? 'block' : 'none';
+      document.getElementById('vistaComision').style.display = vista === 'comision' ? 'block' : 'none';
+      document.getElementById('vistaPaypal').style.display = vista === 'paypal' ? 'block' : 'none';
     }
 
-    // Lógica Vista 1: Divisas
-    function convertirDivisa(operacion) {
+    // Lógica Divisas BCV
+    function seleccionarOperacionBCV(op) {
+      operacionBcvActual = op;
+      
+      const botones = ['USD_BS', 'BS_USD', 'EUR_BS', 'BS_EUR'];
+      botones.forEach(id => {
+        const btn = document.getElementById(`btn_${id}`);
+        if (id === op) {
+          btn.classList.add('selected-op');
+        } else {
+          btn.classList.remove('selected-op');
+        }
+      });
+
+      const etiquetas = {
+        'USD_BS': 'CONVERSIÓN (USD ➔ Bs)',
+        'BS_USD': 'CONVERSIÓN (Bs ➔ USD)',
+        'EUR_BS': 'CONVERSIÓN (EUR ➔ Bs)',
+        'BS_EUR': 'CONVERSIÓN (Bs ➔ EUR)'
+      };
+      document.getElementById('lblOperacionActiva').innerText = etiquetas[op];
+
+      convertirDivisa();
+    }
+
+    function convertirDivisa() {
       const monto = parseFloat(document.getElementById('txtMontoBcv').value);
 
       if (isNaN(monto) || monto <= 0) {
-        document.getElementById('valResultadoBcv').innerText = "0.00 Bs";
+        const unidad = operacionBcvActual.endsWith('BS') ? 'Bs' : (operacionBcvActual.startsWith('EUR') || operacionBcvActual.endsWith('EUR') ? 'EUR' : 'USD');
+        document.getElementById('valResultadoBcv').innerText = `0,00 ${unidad}`;
         return;
       }
 
       let resultado = 0;
       let moneda = "Bs";
 
-      switch (operacion) {
+      switch (operacionBcvActual) {
         case 'USD_BS': resultado = monto * tasaUsd; moneda = "Bs"; break;
         case 'BS_USD': resultado = monto / tasaUsd; moneda = "USD"; break;
         case 'EUR_BS': resultado = monto * tasaEur; moneda = "Bs"; break;
         case 'BS_EUR': resultado = monto / tasaEur; moneda = "EUR"; break;
       }
 
-      document.getElementById('valResultadoBcv').innerText = `${resultado.toFixed(2)} ${moneda}`;
+      const formatoFinal = moneda === 'Bs' ? fmtBs.format(resultado) : fmtUsd.format(resultado);
+      document.getElementById('valResultadoBcv').innerText = `${formatoFinal} ${moneda}`;
     }
 
-    // Lógica Vista 2: Comisión 0.3% con Mínimo de 14.00 Bs
+    // Lógica Comisión Bancaria 0.3%
     function calcularComisionBancaria() {
       const monto = parseFloat(document.getElementById('txtMontoComision').value);
       const cardResultado = document.getElementById('cardResultadoComision');
@@ -530,12 +497,12 @@
 
       const total = monto + comision;
 
-      document.getElementById('lblMontoComision').innerText = `${comision.toFixed(2)} Bs`;
-      document.getElementById('lblMontoTotal').innerText = `${total.toFixed(2)} Bs`;
+      document.getElementById('lblMontoComision').innerText = `${fmtBs.format(comision)} Bs`;
+      document.getElementById('lblMontoTotal').innerText = `${fmtBs.format(total)} Bs`;
       cardResultado.style.display = 'block';
     }
 
-    // Cambiar entre sub-pestañas 'Recibir' y 'Enviar' en PayPal
+    // Lógica PayPal
     function cambiarModoPaypal(modo) {
       modoPaypalActual = modo;
 
@@ -556,7 +523,6 @@
       calcularPaypal();
     }
 
-    // Lógica Vista 3: PayPal (Separado según modo activo)
     function calcularPaypal() {
       const monto = parseFloat(document.getElementById('txtMontoPaypal').value);
       const cardResultado = document.getElementById('cardResultadoPaypal');
@@ -573,24 +539,20 @@
       let comisionUsd = 0;
 
       if (modoPaypalActual === 'recibir') {
-        // Cálculo para RECIBIR N monto exacto
         resultadoUsd = (monto + fijo) / (1 - porcentaje);
         comisionUsd = resultadoUsd - monto;
-
         document.getElementById('lblPaypalTituloResultado').innerText = "PARA RECIBIR ESE MONTO LIMPIO DEBEN ENVIARTE:";
       } else {
-        // Cálculo para ENVIAR G monto bruto
         comisionUsd = (monto * porcentaje) + fijo;
         resultadoUsd = Math.max(0, monto - comisionUsd);
-
         document.getElementById('lblPaypalTituloResultado').innerText = "SI ENVIAS ESE MONTO AL DESTINATARIO LE LLEGA:";
       }
 
       const resultadoBs = resultadoUsd * tasaUsd;
 
-      document.getElementById('lblPaypalResultadoUsd').innerText = `$${resultadoUsd.toFixed(2)} USD`;
-      document.getElementById('lblPaypalResultadoBs').innerText = `~ ${resultadoBs.toFixed(2)} Bs (BCV)`;
-      document.getElementById('lblPaypalComisionUsd').innerText = `$${comisionUsd.toFixed(2)} USD`;
+      document.getElementById('lblPaypalResultadoUsd').innerText = `$${fmtUsd.format(resultadoUsd)} USD`;
+      document.getElementById('lblPaypalResultadoBs').innerText = `~ ${fmtBs.format(resultadoBs)} Bs (BCV)`;
+      document.getElementById('lblPaypalComisionUsd').innerText = `$${fmtUsd.format(comisionUsd)} USD`;
 
       cardResultado.style.display = 'block';
     }
