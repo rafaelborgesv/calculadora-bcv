@@ -7,15 +7,42 @@
   <link rel="icon" type="image/png" href="favicon.png">
   
   <style>
+    :root {
+      --bg-body: #f3f5f8;
+      --bg-card: #ffffff;
+      --bg-input: #f8fafc;
+      --bg-tabs: #f0f3f7;
+      --bg-subtabs: #e2e8f0;
+      --text-main: #1a2332;
+      --text-sub: #7a889b;
+      --border-color: #e2e8f0;
+      --card-inner-bg: #f8fafc;
+      --shadow-color: rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark-theme {
+      --bg-body: #0f172a;
+      --bg-card: #1e293b;
+      --bg-input: #0f172a;
+      --bg-tabs: #0f172a;
+      --bg-subtabs: #334155;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --border-color: #334155;
+      --card-inner-bg: #0f172a;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
     }
 
     body {
-      background-color: #f3f5f8;
+      background-color: var(--bg-body);
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -24,19 +51,38 @@
     }
 
     .app-container {
-      background-color: #ffffff;
+      background-color: var(--bg-card);
       width: 100%;
       max-width: 420px;
       border-radius: 24px;
       padding: 20px 18px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 10px 25px var(--shadow-color);
+      position: relative;
+    }
+
+    /* Botón flotante para Modo Oscuro */
+    .theme-toggle-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: var(--bg-tabs);
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
     }
 
     .tabs-container {
       display: flex;
-      background-color: #f0f3f7;
+      background-color: var(--bg-tabs);
       padding: 4px;
       border-radius: 16px;
+      margin-top: 26px;
       margin-bottom: 20px;
       gap: 2px;
     }
@@ -46,12 +92,11 @@
       padding: 10px 4px;
       border: none;
       border-radius: 12px;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
-      color: #5a6878;
+      color: var(--text-sub);
       background: transparent;
       cursor: pointer;
-      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -78,7 +123,7 @@
 
     .subtabs-container {
       display: flex;
-      background-color: #e2e8f0;
+      background-color: var(--bg-subtabs);
       padding: 3px;
       border-radius: 12px;
       margin-bottom: 16px;
@@ -92,16 +137,15 @@
       border-radius: 9px;
       font-size: 12px;
       font-weight: 700;
-      color: #64748b;
+      color: var(--text-sub);
       background: transparent;
       cursor: pointer;
-      transition: all 0.2s ease;
     }
 
     .subtab-btn.active-subtab {
-      background-color: #ffffff;
+      background-color: var(--bg-card);
       color: #0070ba;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 5px var(--shadow-color);
     }
 
     .header {
@@ -112,18 +156,18 @@
     .header h1 {
       font-size: 22px;
       font-weight: 800;
-      color: #1a2332;
+      color: var(--text-main);
       margin-bottom: 4px;
     }
 
     .header p {
       font-size: 13px;
-      color: #7a889b;
+      color: var(--text-sub);
     }
 
     .rates-card {
-      background-color: #f8fafc;
-      border: 1px solid #eef2f6;
+      background-color: var(--card-inner-bg);
+      border: 1px solid var(--border-color);
       border-radius: 16px;
       padding: 16px;
       display: flex;
@@ -140,12 +184,12 @@
     .rate-divider {
       width: 1px;
       height: 40px;
-      background-color: #e2e8f0;
+      background-color: var(--border-color);
     }
 
     .rate-title-usd { font-size: 12px; font-weight: 800; color: #0d8f58; margin-bottom: 4px; }
     .rate-title-eur { font-size: 12px; font-weight: 800; color: #2563eb; margin-bottom: 4px; }
-    .rate-value { font-size: 18px; font-weight: 800; color: #1a2332; }
+    .rate-value { font-size: 18px; font-weight: 800; color: var(--text-main); }
 
     .input-group {
       margin-bottom: 20px;
@@ -155,19 +199,19 @@
       display: block;
       font-size: 13px;
       font-weight: 600;
-      color: #5a6878;
+      color: var(--text-sub);
       margin-bottom: 8px;
     }
 
     .amount-input {
       width: 100%;
       padding: 14px 16px;
-      background-color: #f8fafc;
-      border: 1.5px solid #e2e8f0;
+      background-color: var(--bg-input);
+      border: 1.5px solid var(--border-color);
       border-radius: 14px;
       font-size: 16px;
       font-weight: 700;
-      color: #1a2332;
+      color: var(--text-main);
       outline: none;
     }
 
@@ -190,25 +234,26 @@
       font-weight: 700;
       color: #ffffff;
       cursor: pointer;
-      transition: all 0.15s ease;
     }
 
     .btn-usd-bs { background-color: #0d8f58; }
     .btn-eur-bs { background-color: #2563eb; }
-    .btn-bs-conv { background-color: #1e293b; }
+    .btn-bs-conv { background-color: #475569; }
 
     .action-btn.selected-op {
-      border-color: #1a2332;
+      border-color: var(--text-main);
       box-shadow: inset 0 0 0 2px #ffffff;
       transform: scale(0.98);
     }
 
+    /* Estilos de Tarjetas de Resultado */
     .result-card-single {
-      background-color: #eefcf4;
-      border: 1px solid #c6f6d5;
+      background-color: var(--card-inner-bg);
+      border: 1px solid var(--border-color);
       border-radius: 16px;
       padding: 18px;
       text-align: center;
+      position: relative;
     }
 
     .result-subtitle {
@@ -222,12 +267,12 @@
     .result-value {
       font-size: 24px;
       font-weight: 800;
-      color: #1a2332;
+      color: var(--text-main);
     }
 
     .result-card-comision {
-      background-color: #f0f6ff;
-      border: 1px solid #dbeafe;
+      background-color: var(--card-inner-bg);
+      border: 1px solid var(--border-color);
       border-radius: 16px;
       padding: 16px;
       display: none;
@@ -241,13 +286,13 @@
     }
 
     .comision-label-blue { font-size: 12px; font-weight: 800; color: #2563eb; letter-spacing: 0.5px; }
-    .comision-label-dark { font-size: 12px; font-weight: 800; color: #1e293b; letter-spacing: 0.5px; }
-    .comision-val { font-size: 16px; font-weight: 800; color: #1a2332; }
-    .comision-divider { height: 1px; background-color: #dbeafe; margin: 8px 0; }
+    .comision-label-dark { font-size: 12px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; }
+    .comision-val { font-size: 16px; font-weight: 800; color: var(--text-main); }
+    .comision-divider { height: 1px; background-color: var(--border-color); margin: 8px 0; }
 
     .result-card-paypal {
-      background-color: #f0f7ff;
-      border: 1px solid #cce3ff;
+      background-color: var(--card-inner-bg);
+      border: 1px solid var(--border-color);
       border-radius: 16px;
       padding: 16px;
       display: none;
@@ -261,14 +306,37 @@
     }
 
     .paypal-label { font-size: 12px; font-weight: 800; color: #0070ba; letter-spacing: 0.5px; }
-    .paypal-main-val { font-size: 22px; font-weight: 800; color: #1a2332; margin-top: 4px; }
+    .paypal-main-val { font-size: 22px; font-weight: 800; color: var(--text-main); margin-top: 4px; }
     .paypal-subval { font-size: 12px; font-weight: 600; color: #0d8f58; margin-top: 2px; }
+
+    /* Botón de Copiar */
+    .btn-copy {
+      margin-top: 12px;
+      background-color: var(--bg-tabs);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 10px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-copy:active {
+      transform: scale(0.96);
+    }
   </style>
 </head>
 <body>
 
   <div class="app-container">
     
+    <!-- Botón Toggle Modo Oscuro -->
+    <button class="theme-toggle-btn" id="btnThemeToggle" onclick="toggleTheme()" title="Cambiar Tema">🌙</button>
+
     <!-- Pestañas Superiores -->
     <div class="tabs-container">
       <button class="tab-btn active-bcv" id="tabBcv" onclick="mostrarVista('bcv')">💵 Tasas BCV</button>
@@ -310,6 +378,7 @@
       <div class="result-card-single">
         <div class="result-subtitle" id="lblOperacionActiva">CONVERSIÓN INMEDIATA (USD ➔ Bs)</div>
         <div class="result-value" id="valResultadoBcv">0,00 Bs</div>
+        <button class="btn-copy" onclick="copiarTexto('valResultadoBcv', this)">📋 Copiar</button>
       </div>
     </div>
 
@@ -334,6 +403,9 @@
         <div class="comision-row">
           <span class="comision-label-dark">MONTO TOTAL + COMISIÓN:</span>
           <span class="comision-val" id="lblMontoTotal">0,00 Bs</span>
+        </div>
+        <div style="text-align: center;">
+          <button class="btn-copy" onclick="copiarTexto('lblMontoTotal', this)">📋 Copiar Total</button>
         </div>
       </div>
     </div>
@@ -363,15 +435,18 @@
         <div class="comision-divider" style="margin: 12px 0;"></div>
 
         <div class="paypal-row">
-          <span style="font-size: 12px; color: #5a6878; font-weight: 600;">Comisión retenida (5.4% + $0.30):</span>
-          <span style="font-size: 13px; color: #1a2332; font-weight: 800;" id="lblPaypalComisionUsd">$0.00 USD</span>
+          <span style="font-size: 12px; color: var(--text-sub); font-weight: 600;">Comisión retenida (5.4% + $0.30):</span>
+          <span style="font-size: 13px; color: var(--text-main); font-weight: 800;" id="lblPaypalComisionUsd">$0.00 USD</span>
+        </div>
+        <div style="text-align: center;">
+          <button class="btn-copy" onclick="copiarTexto('lblPaypalResultadoUsd', this)">📋 Copiar Monto</button>
         </div>
       </div>
     </div>
 
     <!-- Publicidad -->
     <div class="ad-slot" style="text-align: center; margin-top: 15px;">
-      <span class="ad-label" style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 5px;">PUBLICIDAD</span>
+      <span class="ad-label" style="font-size: 11px; color: var(--text-sub); display: block; margin-bottom: 5px;">PUBLICIDAD</span>
       <iframe 
         src="ad.html" 
         width="320" 
@@ -393,16 +468,60 @@
     let operacionBcvActual = 'USD_BS';
     let modoPaypalActual = 'recibir';
 
-    // Formateador regional para moneda venezolana (1.234,56)
     const fmtBs = new Intl.NumberFormat('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtUsd = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     window.onload = function() {
       const fechaHoy = new Date().toLocaleDateString('es-VE');
       document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${fechaHoy}`;
+      
+      inicializarTema();
       actualizarTarjetasTasas();
       obtenerTasasDesdeScript();
     };
+
+    // --- Lógica Tema Oscuro ---
+    function inicializarTema() {
+      const temaGuardado = localStorage.getItem('theme');
+      if (temaGuardado === 'dark' || (!temaGuardado && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.body.classList.add('dark-theme');
+        document.getElementById('btnThemeToggle').innerText = '☀️';
+      } else {
+        document.body.classList.remove('dark-theme');
+        document.getElementById('btnThemeToggle').innerText = '🌙';
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-theme');
+      const esOscuro = document.body.classList.contains('dark-theme');
+      localStorage.setItem('theme', esOscuro ? 'dark' : 'light');
+      document.getElementById('btnThemeToggle').innerText = esOscuro ? '☀️' : '🌙';
+    }
+
+    // --- Lógica Portapapeles ---
+    function copiarTexto(elementId, btn) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const texto = el.innerText || el.textContent;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto);
+      } else {
+        const inputTemp = document.createElement("input");
+        inputTemp.value = texto;
+        document.body.appendChild(inputTemp);
+        inputTemp.select();
+        document.execCommand("copy");
+        document.body.removeChild(inputTemp);
+      }
+
+      const textoOriginal = btn.innerHTML;
+      btn.innerHTML = "✅ Copiado";
+      setTimeout(() => {
+        btn.innerHTML = textoOriginal;
+      }, 1500);
+    }
 
     function actualizarTarjetasTasas() {
       document.getElementById('valUsd').innerText = `${fmtBs.format(tasaUsd)} Bs`;
@@ -432,7 +551,6 @@
       document.getElementById('vistaPaypal').style.display = vista === 'paypal' ? 'block' : 'none';
     }
 
-    // Lógica Divisas BCV
     function seleccionarOperacionBCV(op) {
       operacionBcvActual = op;
       
@@ -480,7 +598,6 @@
       document.getElementById('valResultadoBcv').innerText = `${formatoFinal} ${moneda}`;
     }
 
-    // Lógica Comisión Bancaria 0.3%
     function calcularComisionBancaria() {
       const monto = parseFloat(document.getElementById('txtMontoComision').value);
       const cardResultado = document.getElementById('cardResultadoComision');
@@ -502,7 +619,6 @@
       cardResultado.style.display = 'block';
     }
 
-    // Lógica PayPal
     function cambiarModoPaypal(modo) {
       modoPaypalActual = modo;
 
