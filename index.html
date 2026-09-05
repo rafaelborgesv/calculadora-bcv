@@ -467,7 +467,7 @@
 
       <div class="input-group">
         <label class="input-label">Monto Neto a Convertir</label>
-        <input type="number" id="txtMontoBcv" class="amount-input" placeholder="0.00" oninput="convertirDivisa()">
+        <input type="text" inputmode="decimal" id="txtMontoBcv" class="amount-input" placeholder="0.00" oninput="convertirDivisa()">
       </div>
 
       <div class="buttons-grid">
@@ -493,7 +493,7 @@
 
       <div class="input-group">
         <label class="input-label">Monto de la Operación (Bs)</label>
-        <input type="number" id="txtMontoComision" class="amount-input" placeholder="0.00" oninput="calcularComisionBancaria()">
+        <input type="text" inputmode="decimal" id="txtMontoComision" class="amount-input" placeholder="0.00" oninput="calcularComisionBancaria()">
       </div>
 
       <div class="result-card-comision" id="cardResultadoComision">
@@ -526,7 +526,7 @@
 
       <div class="input-group">
         <label class="input-label" id="lblInputPaypal">Monto exacto que quieres recibir ($)</label>
-        <input type="number" id="txtMontoPaypal" class="amount-input" placeholder="0.00" oninput="calcularPaypal()">
+        <input type="text" inputmode="decimal" id="txtMontoPaypal" class="amount-input" placeholder="0.00" oninput="calcularPaypal()">
       </div>
 
       <div class="result-card-paypal" id="cardResultadoPaypal">
@@ -556,8 +556,8 @@
       <div class="input-group" style="margin-bottom: 12px;">
         <label class="input-label">Agregar Producto ($)</label>
         <div class="cart-input-row">
-          <input type="number" id="txtPrecioProd" class="amount-input" placeholder="Precio ($)" style="flex: 2;">
-          <input type="number" id="txtCantProd" class="amount-input" placeholder="Cant." value="1" style="flex: 1; text-align: center;">
+          <input type="text" inputmode="decimal" id="txtPrecioProd" class="amount-input" placeholder="Precio ($)" style="flex: 2;">
+          <input type="text" inputmode="decimal" id="txtCantProd" class="amount-input" placeholder="Cant." value="1" style="flex: 1; text-align: center;">
           <button class="btn-add-item" onclick="agregarProductoCarrito()">+ Añadir</button>
         </div>
       </div>
@@ -591,7 +591,7 @@
         <!-- Vuelto -->
         <div class="vuelto-box">
           <label class="input-label" style="margin-bottom: 6px;">Pagas con ($ USD en Efectivo)</label>
-          <input type="number" id="txtPagoCliente" class="amount-input" placeholder="Ej: 20" oninput="calcularVueltoCompras()" style="padding: 10px 12px; font-size: 14px;">
+          <input type="text" inputmode="decimal" id="txtPagoCliente" class="amount-input" placeholder="Ej: 20" oninput="calcularVueltoCompras()" style="padding: 10px 12px; font-size: 14px;">
           
           <div class="comision-row" style="margin-top: 8px;">
             <span style="font-size: 12px; font-weight: 800; color: #0d8f58;">VUELTO EN BS:</span>
@@ -634,6 +634,28 @@
 
     const fmtBs = new Intl.NumberFormat('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtUsd = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // --- Helper de Limpieza de Números Pegados/Escritos ---
+    function parsearNumero(valor) {
+      if (!valor) return NaN;
+      let str = valor.toString().trim();
+      
+      // Si contiene tanto puntos como comas
+      if (str.includes('.') && str.includes(',')) {
+        if (str.lastIndexOf(',') > str.lastIndexOf('.')) {
+          // Formato latino/español (ej: 1.234,56 -> 1234.56)
+          str = str.replace(/\./g, '').replace(',', '.');
+        } else {
+          // Formato anglosajón (ej: 1,234.56 -> 1234.56)
+          str = str.replace(/,/g, '');
+        }
+      } else {
+        // Si solo contiene comas (ej: 1234,56 -> 1234.56)
+        str = str.replace(',', '.');
+      }
+      
+      return parseFloat(str);
+    }
 
     window.onload = function() {
       const fechaHoy = new Date().toLocaleDateString('es-VE');
@@ -743,7 +765,7 @@
     }
 
     function convertirDivisa() {
-      const monto = parseFloat(document.getElementById('txtMontoBcv').value);
+      const monto = parsearNumero(document.getElementById('txtMontoBcv').value);
 
       if (isNaN(monto) || monto <= 0) {
         const unidad = operacionBcvActual.endsWith('BS') ? 'Bs' : (operacionBcvActual.startsWith('EUR') || operacionBcvActual.endsWith('EUR') ? 'EUR' : 'USD');
@@ -766,7 +788,7 @@
     }
 
     function calcularComisionBancaria() {
-      const monto = parseFloat(document.getElementById('txtMontoComision').value);
+      const monto = parsearNumero(document.getElementById('txtMontoComision').value);
       const cardResultado = document.getElementById('cardResultadoComision');
 
       if (isNaN(monto) || monto <= 0) {
@@ -807,7 +829,7 @@
     }
 
     function calcularPaypal() {
-      const monto = parseFloat(document.getElementById('txtMontoPaypal').value);
+      const monto = parsearNumero(document.getElementById('txtMontoPaypal').value);
       const cardResultado = document.getElementById('cardResultadoPaypal');
 
       if (isNaN(monto) || monto <= 0) {
@@ -845,8 +867,8 @@
       const precioInput = document.getElementById('txtPrecioProd');
       const cantInput = document.getElementById('txtCantProd');
 
-      const precio = parseFloat(precioInput.value);
-      const cant = parseInt(cantInput.value) || 1;
+      const precio = parsearNumero(precioInput.value);
+      const cant = parsearNumero(cantInput.value) || 1;
 
       if (isNaN(precio) || precio <= 0) return;
 
@@ -912,7 +934,7 @@
     }
 
     function calcularVueltoCompras() {
-      const pagoClienteUsd = parseFloat(document.getElementById('txtPagoCliente').value);
+      const pagoClienteUsd = parsearNumero(document.getElementById('txtPagoCliente').value);
       
       const subtotalUsd = listaCarrito.reduce((acc, item) => acc + (item.precio * item.cant), 0);
       const aplicaIgtf = document.getElementById('chkIgtf').checked;
