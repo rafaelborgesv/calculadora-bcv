@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 5,
-  "latestVersionName": "1.5",
-  "apkUrl": "https://github.com/rafaelborgesv/calculadora-bcv/releases/download/v1.5/app-release.apk",
-  "releaseNotes": "Actualización a la versión 1.5 con mejoras de estabilidad y rendimiento."
+  "latestVersionCode": 6,
+  "latestVersionName": "1.6",
+  "apkUrl": "https://calculadora-bcv-ota.web.app/app-release.bin",
+  "releaseNotes": "Actualización a la versión 1.6 servida a alta velocidad desde Google CDN."
 }
