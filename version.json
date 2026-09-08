@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 6,
-  "latestVersionName": "1.6",
+  "latestVersionCode": 5,
+  "latestVersionName": "1.5",
   "apkUrl": "https://calculadora-bcv-ota.web.app/app-release.bin",
-  "releaseNotes": "Actualización a la versión 1.6 servida a alta velocidad desde Google CDN."
+  "releaseNotes": "Actualización a la versión 1.5 servida a alta velocidad desde Google CDN."
 }
