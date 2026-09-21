@@ -1,629 +1,629 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Calculadora de Divisas y Comisiones</title>
-  <link rel="icon" type="image/png" href="favicon.png">
-  
-  <style>
-    :root {
-      --bg-body: #f3f5f8;
-      --bg-card: #ffffff;
-      --bg-input: #f8fafc;
-      --bg-tabs: #f0f3f7;
-      --bg-subtabs: #e2e8f0;
-      --text-main: #1a2332;
-      --text-sub: #7a889b;
-      --border-color: #e2e8f0;
-      --card-inner-bg: #f8fafc;
-      --shadow-color: rgba(0, 0, 0, 0.05);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calculadora de Divisas y Comisiones</title>
+    <link rel="icon" type="image/png" href="favicon.png">
 
-    body.dark-theme {
-      --bg-body: #0f172a;
-      --bg-card: #1e293b;
-      --bg-input: #0f172a;
-      --bg-tabs: #0f172a;
-      --bg-subtabs: #334155;
-      --text-main: #f8fafc;
-      --text-sub: #94a3b8;
-      --border-color: #334155;
-      --card-inner-bg: #0f172a;
-      --shadow-color: rgba(0, 0, 0, 0.3);
-    }
+    <style>
+        :root {
+          --bg-body: #f3f5f8;
+          --bg-card: #ffffff;
+          --bg-input: #f8fafc;
+          --bg-tabs: #f0f3f7;
+          --bg-subtabs: #e2e8f0;
+          --text-main: #1a2332;
+          --text-sub: #7a889b;
+          --border-color: #e2e8f0;
+          --card-inner-bg: #f8fafc;
+          --shadow-color: rgba(0, 0, 0, 0.05);
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
-    }
+        body.dark-theme {
+          --bg-body: #0f172a;
+          --bg-card: #1e293b;
+          --bg-input: #0f172a;
+          --bg-tabs: #0f172a;
+          --bg-subtabs: #334155;
+          --text-main: #f8fafc;
+          --text-sub: #94a3b8;
+          --border-color: #334155;
+          --card-inner-bg: #0f172a;
+          --shadow-color: rgba(0, 0, 0, 0.3);
+        }
 
-    body {
-      background-color: var(--bg-body);
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 20px 12px;
-    }
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+        }
 
-    .app-container {
-      background-color: var(--bg-card);
-      width: 100%;
-      max-width: 420px;
-      border-radius: 24px;
-      padding: 20px 18px;
-      box-shadow: 0 10px 25px var(--shadow-color);
-      position: relative;
-    }
+        body {
+          background-color: var(--bg-body);
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+          min-height: 100vh;
+          padding: 20px 12px;
+        }
 
-    /* Botón flotante para Modo Oscuro */
-    .theme-toggle-btn {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      background: var(--bg-tabs);
-      border: 1px solid var(--border-color);
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 16px;
-    }
+        .app-container {
+          background-color: var(--bg-card);
+          width: 100%;
+          max-width: 420px;
+          border-radius: 24px;
+          padding: 20px 18px;
+          box-shadow: 0 10px 25px var(--shadow-color);
+          position: relative;
+        }
 
-    .tabs-container {
-      display: flex;
-      background-color: var(--bg-tabs);
-      padding: 4px;
-      border-radius: 16px;
-      margin-top: 26px;
-      margin-bottom: 20px;
-      gap: 2px;
-    }
+        /* Botón flotante para Modo Oscuro */
+        .theme-toggle-btn {
+          position: absolute;
+          top: 18px;
+          right: 18px;
+          background: var(--bg-tabs);
+          border: 1px solid var(--border-color);
+          border-radius: 50%;
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 16px;
+        }
 
-    .tab-btn {
-      flex: 1;
-      padding: 9px 2px;
-      border: none;
-      border-radius: 12px;
-      font-size: 10.5px;
-      font-weight: 700;
-      color: var(--text-sub);
-      background: transparent;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-    }
+        .tabs-container {
+          display: flex;
+          background-color: var(--bg-tabs);
+          padding: 4px;
+          border-radius: 16px;
+          margin-top: 26px;
+          margin-bottom: 20px;
+          gap: 2px;
+        }
 
-    .tab-btn.active-bcv {
-      background-color: #0d8f58;
-      color: #ffffff;
-      box-shadow: 0 2px 6px rgba(13, 143, 88, 0.3);
-    }
+        .tab-btn {
+          flex: 1;
+          padding: 9px 2px;
+          border: none;
+          border-radius: 12px;
+          font-size: 10.5px;
+          font-weight: 700;
+          color: var(--text-sub);
+          background: transparent;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 3px;
+        }
 
-    .tab-btn.active-comision {
-      background-color: #2563eb;
-      color: #ffffff;
-      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
-    }
+        .tab-btn.active-bcv {
+          background-color: #0d8f58;
+          color: #ffffff;
+          box-shadow: 0 2px 6px rgba(13, 143, 88, 0.3);
+        }
 
-    .tab-btn.active-paypal {
-      background-color: #0f766e;
-      color: #ffffff;
-      box-shadow: 0 2px 6px rgba(15, 118, 110, 0.3);
-    }
+        .tab-btn.active-comision {
+          background-color: #2563eb;
+          color: #ffffff;
+          box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+        }
 
-    .tab-btn.active-compras {
-      background-color: #d97706;
-      color: #ffffff;
-      box-shadow: 0 2px 6px rgba(217, 119, 6, 0.3);
-    }
+        .tab-btn.active-paypal {
+          background-color: #0f766e;
+          color: #ffffff;
+          box-shadow: 0 2px 6px rgba(15, 118, 110, 0.3);
+        }
 
-    .subtabs-container {
-      display: flex;
-      background-color: var(--bg-subtabs);
-      padding: 3px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-      gap: 4px;
-    }
+        .tab-btn.active-compras {
+          background-color: #d97706;
+          color: #ffffff;
+          box-shadow: 0 2px 6px rgba(217, 119, 6, 0.3);
+        }
 
-    .subtab-btn {
-      flex: 1;
-      padding: 8px 4px;
-      border: none;
-      border-radius: 9px;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-sub);
-      background: transparent;
-      cursor: pointer;
-    }
+        .subtabs-container {
+          display: flex;
+          background-color: var(--bg-subtabs);
+          padding: 3px;
+          border-radius: 12px;
+          margin-bottom: 16px;
+          gap: 4px;
+        }
 
-    .subtab-btn.active-subtab {
-      background-color: var(--bg-card);
-      color: #0070ba;
-      box-shadow: 0 2px 5px var(--shadow-color);
-    }
+        .subtab-btn {
+          flex: 1;
+          padding: 8px 4px;
+          border: none;
+          border-radius: 9px;
+          font-size: 12px;
+          font-weight: 700;
+          color: var(--text-sub);
+          background: transparent;
+          cursor: pointer;
+        }
 
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+        .subtab-btn.active-subtab {
+          background-color: var(--bg-card);
+          color: #0070ba;
+          box-shadow: 0 2px 5px var(--shadow-color);
+        }
 
-    .header h1 {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 4px;
-    }
+        .header {
+          text-align: center;
+          margin-bottom: 20px;
+        }
 
-    .header p {
-      font-size: 13px;
-      color: var(--text-sub);
-    }
+        .header h1 {
+          font-size: 22px;
+          font-weight: 800;
+          color: var(--text-main);
+          margin-bottom: 4px;
+        }
 
-    .rates-card {
-      background-color: var(--card-inner-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 16px;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      margin-bottom: 20px;
-    }
+        .header p {
+          font-size: 13px;
+          color: var(--text-sub);
+        }
 
-    .rate-box {
-      text-align: center;
-      flex: 1;
-    }
+        .rates-card {
+          background-color: var(--card-inner-bg);
+          border: 1px solid var(--border-color);
+          border-radius: 16px;
+          padding: 16px;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          margin-bottom: 20px;
+        }
 
-    .rate-divider {
-      width: 1px;
-      height: 40px;
-      background-color: var(--border-color);
-    }
+        .rate-box {
+          text-align: center;
+          flex: 1;
+        }
 
-    .rate-title-usd { font-size: 12px; font-weight: 800; color: #0d8f58; margin-bottom: 4px; }
-    .rate-title-eur { font-size: 12px; font-weight: 800; color: #2563eb; margin-bottom: 4px; }
-    .rate-value { font-size: 18px; font-weight: 800; color: var(--text-main); }
+        .rate-divider {
+          width: 1px;
+          height: 40px;
+          background-color: var(--border-color);
+        }
 
-    .input-group {
-      margin-bottom: 20px;
-    }
+        .rate-title-usd { font-size: 12px; font-weight: 800; color: #0d8f58; margin-bottom: 4px; }
+        .rate-title-eur { font-size: 12px; font-weight: 800; color: #2563eb; margin-bottom: 4px; }
+        .rate-value { font-size: 18px; font-weight: 800; color: var(--text-main); }
 
-    .input-label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-sub);
-      margin-bottom: 8px;
-    }
+        .input-group {
+          margin-bottom: 20px;
+        }
 
-    .amount-input {
-      width: 100%;
-      padding: 14px 16px;
-      background-color: var(--bg-input);
-      border: 1.5px solid var(--border-color);
-      border-radius: 14px;
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-main);
-      outline: none;
-    }
+        .input-label {
+          display: block;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--text-sub);
+          margin-bottom: 8px;
+        }
 
-    .amount-input:focus {
-      border-color: #2563eb;
-    }
+        .amount-input {
+          width: 100%;
+          padding: 14px 16px;
+          background-color: var(--bg-input);
+          border: 1.5px solid var(--border-color);
+          border-radius: 14px;
+          font-size: 16px;
+          font-weight: 700;
+          color: var(--text-main);
+          outline: none;
+        }
 
-    .buttons-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
+        .amount-input:focus {
+          border-color: #2563eb;
+        }
 
-    .action-btn {
-      padding: 12px 8px;
-      border: 2px solid transparent;
-      border-radius: 14px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #ffffff;
-      cursor: pointer;
-    }
+        .buttons-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          margin-bottom: 20px;
+        }
 
-    .btn-usd-bs { background-color: #0d8f58; }
-    .btn-eur-bs { background-color: #2563eb; }
-    .btn-bs-conv { background-color: #475569; }
+        .action-btn {
+          padding: 12px 8px;
+          border: 2px solid transparent;
+          border-radius: 14px;
+          font-size: 13px;
+          font-weight: 700;
+          color: #ffffff;
+          cursor: pointer;
+        }
 
-    .action-btn.selected-op {
-      border-color: var(--text-main);
-      box-shadow: inset 0 0 0 2px #ffffff;
-      transform: scale(0.98);
-    }
+        .btn-usd-bs { background-color: #0d8f58; }
+        .btn-eur-bs { background-color: #2563eb; }
+        .btn-bs-conv { background-color: #475569; }
 
-    /* Estilos de Tarjetas de Resultado */
-    .result-card-single {
-      background-color: var(--card-inner-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 18px;
-      text-align: center;
-      position: relative;
-    }
+        .action-btn.selected-op {
+          border-color: var(--text-main);
+          box-shadow: inset 0 0 0 2px #ffffff;
+          transform: scale(0.98);
+        }
 
-    .result-subtitle {
-      font-size: 11px;
-      font-weight: 800;
-      color: #0d8f58;
-      letter-spacing: 0.8px;
-      margin-bottom: 6px;
-    }
+        /* Estilos de Tarjetas de Resultado */
+        .result-card-single {
+          background-color: var(--card-inner-bg);
+          border: 1px solid var(--border-color);
+          border-radius: 16px;
+          padding: 18px;
+          text-align: center;
+          position: relative;
+        }
 
-    .result-value {
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--text-main);
-    }
+        .result-subtitle {
+          font-size: 11px;
+          font-weight: 800;
+          color: #0d8f58;
+          letter-spacing: 0.8px;
+          margin-bottom: 6px;
+        }
 
-    .result-card-comision {
-      background-color: var(--card-inner-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 16px;
-      display: none;
-    }
+        .result-value {
+          font-size: 24px;
+          font-weight: 800;
+          color: var(--text-main);
+        }
 
-    .comision-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
-    }
+        .result-card-comision {
+          background-color: var(--card-inner-bg);
+          border: 1px solid var(--border-color);
+          border-radius: 16px;
+          padding: 16px;
+          display: none;
+        }
 
-    .comision-label-blue { font-size: 12px; font-weight: 800; color: #2563eb; letter-spacing: 0.5px; }
-    .comision-label-dark { font-size: 12px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; }
-    .comision-val { font-size: 16px; font-weight: 800; color: var(--text-main); }
-    .comision-divider { height: 1px; background-color: var(--border-color); margin: 8px 0; }
+        .comision-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 6px 0;
+        }
 
-    .result-card-paypal {
-      background-color: var(--card-inner-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 16px;
-      display: none;
-    }
+        .comision-label-blue { font-size: 12px; font-weight: 800; color: #2563eb; letter-spacing: 0.5px; }
+        .comision-label-dark { font-size: 12px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; }
+        .comision-val { font-size: 16px; font-weight: 800; color: var(--text-main); }
+        .comision-divider { height: 1px; background-color: var(--border-color); margin: 8px 0; }
 
-    .paypal-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
-    }
+        .result-card-paypal {
+          background-color: var(--card-inner-bg);
+          border: 1px solid var(--border-color);
+          border-radius: 16px;
+          padding: 16px;
+          display: none;
+        }
 
-    .paypal-label { font-size: 12px; font-weight: 800; color: #0070ba; letter-spacing: 0.5px; }
-    .paypal-main-val { font-size: 22px; font-weight: 800; color: var(--text-main); margin-top: 4px; }
-    .paypal-subval { font-size: 12px; font-weight: 600; color: #0d8f58; margin-top: 2px; }
+        .paypal-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 6px 0;
+        }
 
-    /* Botón de Copiar */
-    .btn-copy {
-      margin-top: 12px;
-      background-color: var(--bg-tabs);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      border-radius: 10px;
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
+        .paypal-label { font-size: 12px; font-weight: 800; color: #0070ba; letter-spacing: 0.5px; }
+        .paypal-main-val { font-size: 22px; font-weight: 800; color: var(--text-main); margin-top: 4px; }
+        .paypal-subval { font-size: 12px; font-weight: 600; color: #0d8f58; margin-top: 2px; }
 
-    .btn-copy:active {
-      transform: scale(0.96);
-    }
+        /* Botón de Copiar */
+        .btn-copy {
+          margin-top: 12px;
+          background-color: var(--bg-tabs);
+          border: 1px solid var(--border-color);
+          color: var(--text-main);
+          border-radius: 10px;
+          padding: 6px 14px;
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+        }
 
-    /* Estilos Vista Compras */
-    .cart-input-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
+        .btn-copy:active {
+          transform: scale(0.96);
+        }
 
-    .btn-add-item {
-      background-color: #d97706;
-      color: #ffffff;
-      border: none;
-      border-radius: 14px;
-      padding: 0 16px;
-      font-weight: 800;
-      font-size: 14px;
-      cursor: pointer;
-    }
+        /* Estilos Vista Compras */
+        .cart-input-row {
+          display: flex;
+          gap: 8px;
+          margin-bottom: 12px;
+        }
 
-    .cart-options {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: var(--card-inner-bg);
-      border: 1px solid var(--border-color);
-      padding: 10px 14px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-    }
+        .btn-add-item {
+          background-color: #d97706;
+          color: #ffffff;
+          border: none;
+          border-radius: 14px;
+          padding: 0 16px;
+          font-weight: 800;
+          font-size: 14px;
+          cursor: pointer;
+        }
 
-    .cart-options label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-    }
+        .cart-options {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background-color: var(--card-inner-bg);
+          border: 1px solid var(--border-color);
+          padding: 10px 14px;
+          border-radius: 12px;
+          margin-bottom: 16px;
+        }
 
-    .cart-options input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: #d97706;
-    }
+        .cart-options label {
+          font-size: 12px;
+          font-weight: 700;
+          color: var(--text-main);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+        }
 
-    .cart-items-list {
-      max-height: 140px;
-      overflow-y: auto;
-      margin-bottom: 16px;
-      border: 1px dashed var(--border-color);
-      border-radius: 12px;
-      padding: 8px;
-    }
+        .cart-options input[type="checkbox"] {
+          width: 16px;
+          height: 16px;
+          accent-color: #d97706;
+        }
 
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 8px;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 13px;
-      color: var(--text-main);
-    }
+        .cart-items-list {
+          max-height: 140px;
+          overflow-y: auto;
+          margin-bottom: 16px;
+          border: 1px dashed var(--border-color);
+          border-radius: 12px;
+          padding: 8px;
+        }
 
-    .cart-item:last-child {
-      border-bottom: none;
-    }
+        .cart-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 6px 8px;
+          border-bottom: 1px solid var(--border-color);
+          font-size: 13px;
+          color: var(--text-main);
+        }
 
-    .btn-del-item {
-      background: transparent;
-      border: none;
-      color: #ef4444;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 14px;
-      padding: 0 4px;
-    }
+        .cart-item:last-child {
+          border-bottom: none;
+        }
 
-    .btn-clear-cart {
-      background: transparent;
-      border: none;
-      color: #ef4444;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
+        .btn-del-item {
+          background: transparent;
+          border: none;
+          color: #ef4444;
+          font-weight: bold;
+          cursor: pointer;
+          font-size: 14px;
+          padding: 0 4px;
+        }
 
-    .vuelto-box {
-      margin-top: 14px;
-      background-color: var(--bg-input);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 12px;
-    }
-  </style>
+        .btn-clear-cart {
+          background: transparent;
+          border: none;
+          color: #ef4444;
+          font-size: 11px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        .vuelto-box {
+          margin-top: 14px;
+          background-color: var(--bg-input);
+          border: 1px solid var(--border-color);
+          border-radius: 14px;
+          padding: 12px;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="app-container">
-    
+<div class="app-container">
+
     <!-- Botón Toggle Modo Oscuro -->
     <button class="theme-toggle-btn" id="btnThemeToggle" onclick="toggleTheme()" title="Cambiar Tema">🌙</button>
 
     <!-- Pestañas Superiores -->
     <div class="tabs-container">
-      <button class="tab-btn active-bcv" id="tabBcv" onclick="mostrarVista('bcv')">💵 Tasas BCV</button>
-      <button class="tab-btn" id="tabComision" onclick="mostrarVista('comision')">🏦 Comisión</button>
-      <button class="tab-btn" id="tabPaypal" onclick="mostrarVista('paypal')">💳 PayPal</button>
-      <button class="tab-btn" id="tabCompras" onclick="mostrarVista('compras')">🛒 Compras</button>
+        <button class="tab-btn active-bcv" id="tabBcv" onclick="mostrarVista('bcv')">💵 Tasas BCV</button>
+        <button class="tab-btn" id="tabComision" onclick="mostrarVista('comision')">🏦 Comisión</button>
+        <button class="tab-btn" id="tabPaypal" onclick="mostrarVista('paypal')">💳 PayPal</button>
+        <button class="tab-btn" id="tabCompras" onclick="mostrarVista('compras')">🛒 Compras</button>
     </div>
 
     <!-- VISTA 1: TASAS BCV -->
     <div id="vistaBcv">
-      <div class="header">
-        <h1>Calculadora de Divisas</h1>
-        <p id="lblFecha">Tasas oficiales BCV al: --/--/----</p>
-      </div>
-
-      <div class="rates-card">
-        <div class="rate-box">
-          <div class="rate-title-usd">DÓLAR (USD)</div>
-          <div class="rate-value" id="valUsd">--.-- Bs</div>
+        <div class="header">
+            <h1>Calculadora de Divisas</h1>
+            <p id="lblFecha">Tasas oficiales BCV al: --/--/----</p>
         </div>
-        <div class="rate-divider"></div>
-        <div class="rate-box">
-          <div class="rate-title-eur">EURO (EUR)</div>
-          <div class="rate-value" id="valEur">--.-- Bs</div>
+
+        <div class="rates-card">
+            <div class="rate-box">
+                <div class="rate-title-usd">DÓLAR (USD)</div>
+                <div class="rate-value" id="valUsd">--.-- Bs</div>
+            </div>
+            <div class="rate-divider"></div>
+            <div class="rate-box">
+                <div class="rate-title-eur">EURO (EUR)</div>
+                <div class="rate-value" id="valEur">--.-- Bs</div>
+            </div>
         </div>
-      </div>
 
-      <div class="input-group">
-        <label class="input-label">Monto Neto a Convertir</label>
-        <input type="text" inputmode="decimal" id="txtMontoBcv" class="amount-input" placeholder="0.00" oninput="convertirDivisa()">
-      </div>
+        <div class="input-group">
+            <label class="input-label">Monto Neto a Convertir</label>
+            <input type="text" inputmode="decimal" id="txtMontoBcv" class="amount-input" placeholder="0.00" oninput="convertirDivisa()">
+        </div>
 
-      <div class="buttons-grid">
-        <button class="action-btn btn-usd-bs selected-op" id="btn_USD_BS" onclick="seleccionarOperacionBCV('USD_BS')">USD a Bs</button>
-        <button class="action-btn btn-bs-conv" id="btn_BS_USD" onclick="seleccionarOperacionBCV('BS_USD')">Bs a USD</button>
-        <button class="action-btn btn-eur-bs" id="btn_EUR_BS" onclick="seleccionarOperacionBCV('EUR_BS')">EUR a Bs</button>
-        <button class="action-btn btn-bs-conv" id="btn_BS_EUR" onclick="seleccionarOperacionBCV('BS_EUR')">Bs a EUR</button>
-      </div>
+        <div class="buttons-grid">
+            <button class="action-btn btn-usd-bs selected-op" id="btn_USD_BS" onclick="seleccionarOperacionBCV('USD_BS')">USD a Bs</button>
+            <button class="action-btn btn-bs-conv" id="btn_BS_USD" onclick="seleccionarOperacionBCV('BS_USD')">Bs a USD</button>
+            <button class="action-btn btn-eur-bs" id="btn_EUR_BS" onclick="seleccionarOperacionBCV('EUR_BS')">EUR a Bs</button>
+            <button class="action-btn btn-bs-conv" id="btn_BS_EUR" onclick="seleccionarOperacionBCV('BS_EUR')">Bs a EUR</button>
+        </div>
 
-      <div class="result-card-single">
-        <div class="result-subtitle" id="lblOperacionActiva">CONVERSIÓN INMEDIATA (USD ➔ Bs)</div>
-        <div class="result-value" id="valResultadoBcv">0,00 Bs</div>
-        <button class="btn-copy" onclick="copiarTexto('valResultadoBcv', this)">📋 Copiar</button>
-      </div>
+        <div class="result-card-single">
+            <div class="result-subtitle" id="lblOperacionActiva">CONVERSIÓN INMEDIATA (USD ➔ Bs)</div>
+            <div class="result-value" id="valResultadoBcv">0,00 Bs</div>
+            <button class="btn-copy" onclick="copiarTexto('valResultadoBcv', this)">📋 Copiar</button>
+        </div>
     </div>
 
     <!-- VISTA 2: COMISIÓN BANCARIA -->
     <div id="vistaComision" style="display: none;">
-      <div class="header">
-        <h1>Comisión Bancaria</h1>
-        <p>Cálculo basado en 0.3% (Mínimo legal: 14.00 Bs)</p>
-      </div>
+        <div class="header">
+            <h1>Comisión Bancaria</h1>
+            <p>Cálculo basado en 0.3% (Mínimo legal: 14.00 Bs)</p>
+        </div>
 
-      <div class="input-group">
-        <label class="input-label">Monto de la Operación (Bs)</label>
-        <input type="text" inputmode="decimal" id="txtMontoComision" class="amount-input" placeholder="0.00" oninput="calcularComisionBancaria()">
-      </div>
+        <div class="input-group">
+            <label class="input-label">Monto de la Operación (Bs)</label>
+            <input type="text" inputmode="decimal" id="txtMontoComision" class="amount-input" placeholder="0.00" oninput="calcularComisionBancaria()">
+        </div>
 
-      <div class="result-card-comision" id="cardResultadoComision">
-        <div class="comision-row">
-          <span class="comision-label-blue">COMISIÓN (0.3%):</span>
-          <span class="comision-val" id="lblMontoComision">0,00 Bs</span>
+        <div class="result-card-comision" id="cardResultadoComision">
+            <div class="comision-row">
+                <span class="comision-label-blue">COMISIÓN (0.3%):</span>
+                <span class="comision-val" id="lblMontoComision">0,00 Bs</span>
+            </div>
+            <div class="comision-divider"></div>
+            <div class="comision-row">
+                <span class="comision-label-dark">MONTO TOTAL + COMISIÓN:</span>
+                <span class="comision-val" id="lblMontoTotal">0,00 Bs</span>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn-copy" onclick="copiarTexto('lblMontoTotal', this)">📋 Copiar Total</button>
+            </div>
         </div>
-        <div class="comision-divider"></div>
-        <div class="comision-row">
-          <span class="comision-label-dark">MONTO TOTAL + COMISIÓN:</span>
-          <span class="comision-val" id="lblMontoTotal">0,00 Bs</span>
-        </div>
-        <div style="text-align: center;">
-          <button class="btn-copy" onclick="copiarTexto('lblMontoTotal', this)">📋 Copiar Total</button>
-        </div>
-      </div>
     </div>
 
     <!-- VISTA 3: PAYPAL -->
     <div id="vistaPaypal" style="display: none;">
-      <div class="header">
-        <h1>Calculadora de Comisión Digital</h1>
-        <p>Comisión estándar: 5.4% + $0.30 USD</p>
-      </div>
-
-      <div class="subtabs-container">
-        <button class="subtab-btn active-subtab" id="subtabRecibir" onclick="cambiarModoPaypal('recibir')">📥 Quiero Recibir</button>
-        <button class="subtab-btn" id="subtabEnviar" onclick="cambiarModoPaypal('enviar')">📤 Voy a Enviar</button>
-      </div>
-
-      <div class="input-group">
-        <label class="input-label" id="lblInputPaypal">Monto exacto que quieres recibir ($)</label>
-        <input type="text" inputmode="decimal" id="txtMontoPaypal" class="amount-input" placeholder="0.00" oninput="calcularPaypal()">
-      </div>
-
-      <div class="result-card-paypal" id="cardResultadoPaypal">
-        <div class="paypal-label" id="lblPaypalTituloResultado">PARA RECIBIR ESE MONTO LIMPIO DEBEN ENVIARTE:</div>
-        <div class="paypal-main-val" id="lblPaypalResultadoUsd">$0.00 USD</div>
-        <div class="paypal-subval" id="lblPaypalResultadoBs">~ 0,00 Bs (BCV)</div>
-
-        <div class="comision-divider" style="margin: 12px 0;"></div>
-
-        <div class="paypal-row">
-          <span style="font-size: 12px; color: var(--text-sub); font-weight: 600;">Comisión retenida (5.4% + $0.30):</span>
-          <span style="font-size: 13px; color: var(--text-main); font-weight: 800;" id="lblPaypalComisionUsd">$0.00 USD</span>
+        <div class="header">
+            <h1>Calculadora de Comisión Digital</h1>
+            <p>Comisión estándar: 5.4% + $0.30 USD</p>
         </div>
-        <div style="text-align: center;">
-          <button class="btn-copy" onclick="copiarTexto('lblPaypalResultadoUsd', this)">📋 Copiar Monto</button>
+
+        <div class="subtabs-container">
+            <button class="subtab-btn active-subtab" id="subtabRecibir" onclick="cambiarModoPaypal('recibir')">📥 Quiero Recibir</button>
+            <button class="subtab-btn" id="subtabEnviar" onclick="cambiarModoPaypal('enviar')">📤 Voy a Enviar</button>
         </div>
-      </div>
+
+        <div class="input-group">
+            <label class="input-label" id="lblInputPaypal">Monto exacto que quieres recibir ($)</label>
+            <input type="text" inputmode="decimal" id="txtMontoPaypal" class="amount-input" placeholder="0.00" oninput="calcularPaypal()">
+        </div>
+
+        <div class="result-card-paypal" id="cardResultadoPaypal">
+            <div class="paypal-label" id="lblPaypalTituloResultado">PARA RECIBIR ESE MONTO LIMPIO DEBEN ENVIARTE:</div>
+            <div class="paypal-main-val" id="lblPaypalResultadoUsd">$0.00 USD</div>
+            <div class="paypal-subval" id="lblPaypalResultadoBs">~ 0,00 Bs (BCV)</div>
+
+            <div class="comision-divider" style="margin: 12px 0;"></div>
+
+            <div class="paypal-row">
+                <span style="font-size: 12px; color: var(--text-sub); font-weight: 600;">Comisión retenida (5.4% + $0.30):</span>
+                <span style="font-size: 13px; color: var(--text-main); font-weight: 800;" id="lblPaypalComisionUsd">$0.00 USD</span>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn-copy" onclick="copiarTexto('lblPaypalResultadoUsd', this)">📋 Copiar Monto</button>
+            </div>
+        </div>
     </div>
 
     <!-- VISTA 4: COMPRAS / SUPERMERCADO -->
     <div id="vistaCompras" style="display: none;">
-      <div class="header">
-        <h1>Calculadora de Compras</h1>
-        <p>Suma tus productos y calcula tu vuelto</p>
-      </div>
-
-      <div class="input-group" style="margin-bottom: 12px;">
-        <label class="input-label">Agregar Producto ($)</label>
-        <div class="cart-input-row">
-          <input type="text" inputmode="decimal" id="txtPrecioProd" class="amount-input" placeholder="Precio ($)" style="flex: 2;">
-          <input type="text" inputmode="decimal" id="txtCantProd" class="amount-input" placeholder="Cant." value="1" style="flex: 1; text-align: center;">
-          <button class="btn-add-item" onclick="agregarProductoCarrito()">+ Añadir</button>
-        </div>
-      </div>
-
-      <div class="cart-options">
-        <label>
-          <input type="checkbox" id="chkIgtf" onchange="actualizarCarritoUI()">
-          Aplicar IGTF (3% en Divisas)
-        </label>
-        <button class="btn-clear-cart" onclick="limpiarCarrito()">Vaciar 🗑️</button>
-      </div>
-
-      <div class="cart-items-list" id="contenedorListaCarrito">
-        <p style="font-size: 12px; color: var(--text-sub); text-align: center; padding: 12px;" id="lblCarritoVacio">El carrito está vacío</p>
-      </div>
-
-      <div class="result-card-single" style="border-color: #fde68a;">
-        <div class="comision-row">
-          <span style="font-size: 12px; color: var(--text-sub);">Subtotal:</span>
-          <span style="font-size: 13px; font-weight: 700; color: var(--text-main);" id="lblCartSubtotal">$0.00 USD</span>
-        </div>
-        <div class="comision-row" id="rowIgtfInfo" style="display: none;">
-          <span style="font-size: 12px; color: #d97706;">IGTF (3%):</span>
-          <span style="font-size: 13px; font-weight: 700; color: #d97706;" id="lblCartIgtf">$0.00 USD</span>
-        </div>
-        <div class="comision-divider"></div>
-        <div class="result-subtitle" style="color: #d97706;">TOTAL A PAGAR EN CAJA</div>
-        <div class="result-value" id="lblCartTotalBs">0,00 Bs</div>
-        <div style="font-size: 13px; font-weight: 700; color: var(--text-sub); margin-top: 2px;" id="lblCartTotalUsd">~ $0.00 USD</div>
-
-        <!-- Vuelto -->
-        <div class="vuelto-box">
-          <label class="input-label" style="margin-bottom: 6px;">Pagas con ($ USD en Efectivo)</label>
-          <input type="text" inputmode="decimal" id="txtPagoCliente" class="amount-input" placeholder="Ej: 20" oninput="calcularVueltoCompras()" style="padding: 10px 12px; font-size: 14px;">
-          
-          <div class="comision-row" style="margin-top: 8px;">
-            <span style="font-size: 12px; font-weight: 800; color: #0d8f58;">VUELTO EN BS:</span>
-            <span style="font-size: 15px; font-weight: 800; color: #0d8f58;" id="lblVueltoBs">0,00 Bs</span>
-          </div>
-          <div class="comision-row">
-            <span style="font-size: 11px; color: var(--text-sub);">Equivalente en USD:</span>
-            <span style="font-size: 12px; font-weight: 700; color: var(--text-main);" id="lblVueltoUsd">$0.00 USD</span>
-          </div>
+        <div class="header">
+            <h1>Calculadora de Compras</h1>
+            <p>Suma tus productos y calcula tu vuelto</p>
         </div>
 
-        <button class="btn-copy" onclick="copiarTexto('lblCartTotalBs', this)">📋 Copiar Total Bs</button>
-      </div>
+        <div class="input-group" style="margin-bottom: 12px;">
+            <label class="input-label">Agregar Producto ($)</label>
+            <div class="cart-input-row">
+                <input type="text" inputmode="decimal" id="txtPrecioProd" class="amount-input" placeholder="Precio ($)" style="flex: 2;">
+                <input type="text" inputmode="decimal" id="txtCantProd" class="amount-input" placeholder="Cant." value="1" style="flex: 1; text-align: center;">
+                <button class="btn-add-item" onclick="agregarProductoCarrito()">+ Añadir</button>
+            </div>
+        </div>
+
+        <div class="cart-options">
+            <label>
+                <input type="checkbox" id="chkIgtf" onchange="actualizarCarritoUI()">
+                Aplicar IGTF (3% en Divisas)
+            </label>
+            <button class="btn-clear-cart" onclick="limpiarCarrito()">Vaciar 🗑️</button>
+        </div>
+
+        <div class="cart-items-list" id="contenedorListaCarrito">
+            <p style="font-size: 12px; color: var(--text-sub); text-align: center; padding: 12px;" id="lblCarritoVacio">El carrito está vacío</p>
+        </div>
+
+        <div class="result-card-single" style="border-color: #fde68a;">
+            <div class="comision-row">
+                <span style="font-size: 12px; color: var(--text-sub);">Subtotal:</span>
+                <span style="font-size: 13px; font-weight: 700; color: var(--text-main);" id="lblCartSubtotal">$0.00 USD</span>
+            </div>
+            <div class="comision-row" id="rowIgtfInfo" style="display: none;">
+                <span style="font-size: 12px; color: #d97706;">IGTF (3%):</span>
+                <span style="font-size: 13px; font-weight: 700; color: #d97706;" id="lblCartIgtf">$0.00 USD</span>
+            </div>
+            <div class="comision-divider"></div>
+            <div class="result-subtitle" style="color: #d97706;">TOTAL A PAGAR EN CAJA</div>
+            <div class="result-value" id="lblCartTotalBs">0,00 Bs</div>
+            <div style="font-size: 13px; font-weight: 700; color: var(--text-sub); margin-top: 2px;" id="lblCartTotalUsd">~ $0.00 USD</div>
+
+            <!-- Vuelto -->
+            <div class="vuelto-box">
+                <label class="input-label" style="margin-bottom: 6px;">Pagas con ($ USD en Efectivo)</label>
+                <input type="text" inputmode="decimal" id="txtPagoCliente" class="amount-input" placeholder="Ej: 20" oninput="calcularVueltoCompras()" style="padding: 10px 12px; font-size: 14px;">
+
+                <div class="comision-row" style="margin-top: 8px;">
+                    <span style="font-size: 12px; font-weight: 800; color: #0d8f58;">VUELTO EN BS:</span>
+                    <span style="font-size: 15px; font-weight: 800; color: #0d8f58;" id="lblVueltoBs">0,00 Bs</span>
+                </div>
+                <div class="comision-row">
+                    <span style="font-size: 11px; color: var(--text-sub);">Equivalente en USD:</span>
+                    <span style="font-size: 12px; font-weight: 700; color: var(--text-main);" id="lblVueltoUsd">$0.00 USD</span>
+                </div>
+            </div>
+
+            <button class="btn-copy" onclick="copiarTexto('lblCartTotalBs', this)">📋 Copiar Total Bs</button>
+        </div>
     </div>
 
     <!-- Publicidad -->
     <div class="ad-slot" style="text-align: center; margin-top: 15px;">
-      <span class="ad-label" style="font-size: 11px; color: var(--text-sub); display: block; margin-bottom: 5px;">PUBLICIDAD</span>
-      <iframe 
-        src="ad.html" 
-        width="320" 
-        height="260" 
-        frameborder="0" 
-        scrolling="no"
-        sandbox="allow-scripts allow-same-origin allow-popups"
-        style="border:none; overflow:hidden;">
-      </iframe>
+        <span class="ad-label" style="font-size: 11px; color: var(--text-sub); display: block; margin-bottom: 5px;">PUBLICIDAD</span>
+        <iframe
+                src="ad.html"
+                width="320"
+                height="260"
+                frameborder="0"
+                scrolling="no"
+                sandbox="allow-scripts allow-same-origin allow-popups"
+                style="border:none; overflow:hidden;">
+        </iframe>
     </div>
 
-  </div>
+</div>
 
-  <script>
+<script>
     const API_URL = "https://script.google.com/macros/s/AKfycbymLInmOJa9sPeQcZtRb2A-UmUiYyKWRIRdave7HkKBUCtxdXZiwryeRDcPmbPsuSyLaA/exec";
 
     let tasaUsd = 0.00;
@@ -639,7 +639,7 @@
     function parsearNumero(valor) {
       if (!valor) return NaN;
       let str = valor.toString().trim();
-      
+
       if (str.includes('.') && str.includes(',')) {
         if (str.lastIndexOf(',') > str.lastIndexOf('.')) {
           str = str.replace(/\./g, '').replace(',', '.');
@@ -649,15 +649,77 @@
       } else {
         str = str.replace(',', '.');
       }
-      
+
       return parseFloat(str);
     }
 
     window.onload = function() {
-      inicializarTema();
-      cargarCacheOffline();
-      obtenerTasasDesdeScript();
-    };
+  inicializarTema();
+  cargarEstadoGuardado(); // 1. PRIMERO: Restaura el carrito y los montos guardados
+  cargarCacheOffline();   // 2. SEGUNDO: Aplica las tasas del BCV en caché a los datos restaurados
+  obtenerTasasDesdeScript(); // 3. TERCERO: Actualiza tasas desde la red
+};
+
+    // --- Lógica de Estado Persistente (localStorage) ---
+    function cargarEstadoGuardado() {
+      try {
+        // 1. Restaurar Vista Activa
+        const vistaGuardada = localStorage.getItem('app_vista_activa');
+        if (vistaGuardada) {
+          mostrarVista(vistaGuardada);
+        }
+
+        // 2. Restaurar Vista BCV
+        const montoBcv = localStorage.getItem('bcv_monto');
+        if (montoBcv !== null) {
+          document.getElementById('txtMontoBcv').value = montoBcv;
+        }
+        const opBcv = localStorage.getItem('bcv_operacion');
+        if (opBcv) {
+          seleccionarOperacionBCV(opBcv);
+        } else {
+          convertirDivisa();
+        }
+
+        // 3. Restaurar Vista Comisión
+        const montoComision = localStorage.getItem('comision_monto');
+        if (montoComision !== null) {
+          document.getElementById('txtMontoComision').value = montoComision;
+          calcularComisionBancaria();
+        }
+
+        // 4. Restaurar Vista PayPal
+        const modoPaypal = localStorage.getItem('paypal_modo');
+        if (modoPaypal) {
+          cambiarModoPaypal(modoPaypal);
+        }
+        const montoPaypal = localStorage.getItem('paypal_monto');
+        if (montoPaypal !== null) {
+          document.getElementById('txtMontoPaypal').value = montoPaypal;
+          calcularPaypal();
+        }
+
+        // 5. Restaurar Vista Compras (Carrito)
+        const carritoGuardado = localStorage.getItem('compras_carrito');
+        if (carritoGuardado) {
+          listaCarrito = JSON.parse(carritoGuardado);
+        }
+
+        const igtfGuardado = localStorage.getItem('compras_igtf');
+        if (igtfGuardado !== null) {
+          document.getElementById('chkIgtf').checked = (igtfGuardado === 'true');
+        }
+
+        const pagoGuardado = localStorage.getItem('compras_pago_cliente');
+        if (pagoGuardado !== null) {
+          document.getElementById('txtPagoCliente').value = pagoGuardado;
+        }
+
+        actualizarCarritoUI();
+      } catch (e) {
+        console.error("Error al cargar el estado guardado:", e);
+      }
+    }
 
     // --- Lógica de Caché y Almacenamiento Local ---
     function cargarCacheOffline() {
@@ -689,7 +751,7 @@
         .then(data => {
           if (data.usd) tasaUsd = parseFloat(data.usd);
           if (data.eur) tasaEur = parseFloat(data.eur);
-          
+
           const fechaStr = data.fecha || new Date().toLocaleDateString('es-VE');
           document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${fechaStr}`;
 
@@ -756,6 +818,8 @@
     }
 
     function mostrarVista(vista) {
+      localStorage.setItem('app_vista_activa', vista);
+
       document.getElementById('tabBcv').className = 'tab-btn' + (vista === 'bcv' ? ' active-bcv' : '');
       document.getElementById('tabComision').className = 'tab-btn' + (vista === 'comision' ? ' active-comision' : '');
       document.getElementById('tabPaypal').className = 'tab-btn' + (vista === 'paypal' ? ' active-paypal' : '');
@@ -769,7 +833,8 @@
 
     function seleccionarOperacionBCV(op) {
       operacionBcvActual = op;
-      
+      localStorage.setItem('bcv_operacion', op);
+
       const botones = ['USD_BS', 'BS_USD', 'EUR_BS', 'BS_EUR'];
       botones.forEach(id => {
         const btn = document.getElementById(`btn_${id}`);
@@ -792,7 +857,10 @@
     }
 
     function convertirDivisa() {
-      const monto = parsearNumero(document.getElementById('txtMontoBcv').value);
+      const inputValor = document.getElementById('txtMontoBcv').value;
+      localStorage.setItem('bcv_monto', inputValor);
+
+      const monto = parsearNumero(inputValor);
 
       if (isNaN(monto) || monto <= 0) {
         const unidad = operacionBcvActual.endsWith('BS') ? 'Bs' : (operacionBcvActual.startsWith('EUR') || operacionBcvActual.endsWith('EUR') ? 'EUR' : 'USD');
@@ -815,7 +883,10 @@
     }
 
     function calcularComisionBancaria() {
-      const monto = parsearNumero(document.getElementById('txtMontoComision').value);
+      const inputValor = document.getElementById('txtMontoComision').value;
+      localStorage.setItem('comision_monto', inputValor);
+
+      const monto = parsearNumero(inputValor);
       const cardResultado = document.getElementById('cardResultadoComision');
 
       if (isNaN(monto) || monto <= 0) {
@@ -837,6 +908,7 @@
 
     function cambiarModoPaypal(modo) {
       modoPaypalActual = modo;
+      localStorage.setItem('paypal_modo', modo);
 
       const subtabRecibir = document.getElementById('subtabRecibir');
       const subtabEnviar = document.getElementById('subtabEnviar');
@@ -856,7 +928,10 @@
     }
 
     function calcularPaypal() {
-      const monto = parsearNumero(document.getElementById('txtMontoPaypal').value);
+      const inputValor = document.getElementById('txtMontoPaypal').value;
+      localStorage.setItem('paypal_monto', inputValor);
+
+      const monto = parsearNumero(inputValor);
       const cardResultado = document.getElementById('cardResultadoPaypal');
 
       if (isNaN(monto) || monto <= 0) {
@@ -916,12 +991,20 @@
     function limpiarCarrito() {
       listaCarrito = [];
       document.getElementById('txtPagoCliente').value = '';
+
+      localStorage.removeItem('compras_carrito');
+      localStorage.removeItem('compras_pago_cliente');
+
       actualizarCarritoUI();
     }
 
     function actualizarCarritoUI() {
       const contenedor = document.getElementById('contenedorListaCarrito');
-      
+
+      // Guardar lista y estado IGTF
+      localStorage.setItem('compras_carrito', JSON.stringify(listaCarrito));
+      localStorage.setItem('compras_igtf', document.getElementById('chkIgtf').checked);
+
       if (listaCarrito.length === 0) {
         contenedor.innerHTML = '<p style="font-size: 12px; color: var(--text-sub); text-align: center; padding: 12px;" id="lblCarritoVacio">El carrito está vacío</p>';
       } else {
@@ -931,7 +1014,7 @@
           itemEl.className = 'cart-item';
           itemEl.innerHTML = `
             <span>${item.cant}x @ $${fmtUsd.format(item.precio)}</span>
-            <span><strong>$${fmtUsd.format(item.precio * item.cant)}</strong> 
+            <span><strong>$${fmtUsd.format(item.precio * item.cant)}</strong>
             <button class="btn-del-item" onclick="eliminarProductoCarrito(${index})">✕</button></span>
           `;
           contenedor.appendChild(itemEl);
@@ -945,7 +1028,7 @@
       const totalBs = totalUsd * tasaUsd;
 
       document.getElementById('lblCartSubtotal').innerText = `$${fmtUsd.format(subtotalUsd)} USD`;
-      
+
       const rowIgtf = document.getElementById('rowIgtfInfo');
       if (aplicaIgtf) {
         rowIgtf.style.display = 'flex';
@@ -961,8 +1044,11 @@
     }
 
     function calcularVueltoCompras() {
-      const pagoClienteUsd = parsearNumero(document.getElementById('txtPagoCliente').value);
-      
+      const inputPago = document.getElementById('txtPagoCliente').value;
+      localStorage.setItem('compras_pago_cliente', inputPago);
+
+      const pagoClienteUsd = parsearNumero(inputPago);
+
       const subtotalUsd = listaCarrito.reduce((acc, item) => acc + (item.precio * item.cant), 0);
       const aplicaIgtf = document.getElementById('chkIgtf').checked;
       const totalUsd = aplicaIgtf ? subtotalUsd * 1.03 : subtotalUsd;
@@ -986,6 +1072,6 @@
         document.getElementById('lblVueltoUsd').innerText = `$${fmtUsd.format(vueltoUsd)} USD`;
       }
     }
-  </script>
+</script>
 </body>
 </html>
