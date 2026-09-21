@@ -1,6 +1,6 @@
 {
-  "latestVersionCode": 5,
-  "latestVersionName": "1.5",
+  "latestVersionCode": 6,
+  "latestVersionName": "1.5.1",
   "apkUrl": "https://calculadora-bcv-ota.web.app/app-release.bin",
-  "releaseNotes": "Actualización a la versión 1.5 servida a alta velocidad desde Google CDN."
+  "releaseNotes": "Persistencia de datos al cambiar de app.\n- Guardado automático en la Calculadora de Compras e IGTF.\n- Mejoras en la estabilidad general."
 }
