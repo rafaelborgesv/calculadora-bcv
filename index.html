@@ -171,6 +171,7 @@
           color: var(--text-sub);
         }
 
+        /* Tarjeta de Tasas Vigentes */
         .rates-card {
           background-color: var(--card-inner-bg);
           border: 1px solid var(--border-color);
@@ -179,7 +180,7 @@
           display: flex;
           justify-content: space-around;
           align-items: center;
-          margin-bottom: 20px;
+          margin-bottom: 10px;
         }
 
         .rate-box {
@@ -196,6 +197,32 @@
         .rate-title-usd { font-size: 12px; font-weight: 800; color: #0d8f58; margin-bottom: 4px; }
         .rate-title-eur { font-size: 12px; font-weight: 800; color: #2563eb; margin-bottom: 4px; }
         .rate-value { font-size: 18px; font-weight: 800; color: var(--text-main); }
+
+        /* Recuadro Tasa Anterior */
+        .prev-rates-card {
+          background-color: var(--card-inner-bg);
+          border: 1px dashed var(--border-color);
+          border-radius: 14px;
+          padding: 10px 14px;
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .prev-rates-title {
+          font-size: 11px;
+          font-weight: 700;
+          color: var(--text-sub);
+        }
+
+        .prev-rates-values {
+          display: flex;
+          gap: 12px;
+          font-size: 12px;
+          font-weight: 700;
+          color: var(--text-main);
+        }
 
         .input-group {
           margin-bottom: 20px;
@@ -252,7 +279,6 @@
           transform: scale(0.98);
         }
 
-        /* Estilos de Tarjetas de Resultado */
         .result-card-single {
           background-color: var(--card-inner-bg);
           border: 1px solid var(--border-color);
@@ -315,7 +341,6 @@
         .paypal-main-val { font-size: 22px; font-weight: 800; color: var(--text-main); margin-top: 4px; }
         .paypal-subval { font-size: 12px; font-weight: 600; color: #0d8f58; margin-top: 2px; }
 
-        /* Botón de Copiar */
         .btn-copy {
           margin-top: 12px;
           background-color: var(--bg-tabs);
@@ -335,7 +360,6 @@
           transform: scale(0.96);
         }
 
-        /* Estilos Vista Compras */
         .cart-input-row {
           display: flex;
           gap: 8px;
@@ -450,9 +474,10 @@
     <div id="vistaBcv">
         <div class="header">
             <h1>Calculadora de Divisas</h1>
-            <p id="lblFecha">Tasas oficiales BCV al: --/--/----</p>
+            <p id="lblFecha">Fecha Valor BCV: --/--/----</p>
         </div>
 
+        <!-- Tarjeta de Tasas Oficiales -->
         <div class="rates-card">
             <div class="rate-box">
                 <div class="rate-title-usd">DÓLAR (USD)</div>
@@ -462,6 +487,16 @@
             <div class="rate-box">
                 <div class="rate-title-eur">EURO (EUR)</div>
                 <div class="rate-value" id="valEur">--.-- Bs</div>
+            </div>
+        </div>
+
+        <!-- Recuadro Tasa Anterior -->
+        <div class="prev-rates-card">
+            <span class="prev-rates-title">TASA ANTERIOR BCV</span>
+            <div class="prev-rates-values">
+                <span>USD: <strong id="valUsdPrev" style="color: var(--text-sub);">--.-- Bs</strong></span>
+                <span>|</span>
+                <span>EUR: <strong id="valEurPrev" style="color: var(--text-sub);">--.-- Bs</strong></span>
             </div>
         </div>
 
@@ -607,7 +642,7 @@
         </div>
     </div>
 
-    <!-- Publicidad -->
+    <!-- Publicidad AdMob -->
     <div class="ad-slot" style="text-align: center; margin-top: 15px;">
         <span class="ad-label" style="font-size: 11px; color: var(--text-sub); display: block; margin-bottom: 5px;">PUBLICIDAD</span>
         <iframe
@@ -628,6 +663,8 @@
 
     let tasaUsd = 0.00;
     let tasaEur = 0.00;
+    let tasaUsdAnterior = 0.00;
+    let tasaEurAnterior = 0.00;
     let operacionBcvActual = 'USD_BS';
     let modoPaypalActual = 'recibir';
     let listaCarrito = [];
@@ -635,7 +672,6 @@
     const fmtBs = new Intl.NumberFormat('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtUsd = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    // --- Helper de Limpieza de Números Pegados/Escritos ---
     function parsearNumero(valor) {
       if (!valor) return NaN;
       let str = valor.toString().trim();
@@ -654,74 +690,54 @@
     }
 
     window.onload = function() {
-  inicializarTema();
-  cargarEstadoGuardado(); // 1. PRIMERO: Restaura el carrito y los montos guardados
-  cargarCacheOffline();   // 2. SEGUNDO: Aplica las tasas del BCV en caché a los datos restaurados
-  obtenerTasasDesdeScript(); // 3. TERCERO: Actualiza tasas desde la red
-};
+      inicializarTema();
+      cargarEstadoGuardado();    // 1. Restaura carrito y campos
+      cargarCacheOffline();      // 2. Aplica tasas locales guardadas
+      obtenerTasasDesdeScript(); // 3. Actualiza desde la red
+    };
 
-    // --- Lógica de Estado Persistente (localStorage) ---
     function cargarEstadoGuardado() {
       try {
-        // 1. Restaurar Vista Activa
         const vistaGuardada = localStorage.getItem('app_vista_activa');
-        if (vistaGuardada) {
-          mostrarVista(vistaGuardada);
-        }
+        if (vistaGuardada) mostrarVista(vistaGuardada);
 
-        // 2. Restaurar Vista BCV
         const montoBcv = localStorage.getItem('bcv_monto');
-        if (montoBcv !== null) {
-          document.getElementById('txtMontoBcv').value = montoBcv;
-        }
-        const opBcv = localStorage.getItem('bcv_operacion');
-        if (opBcv) {
-          seleccionarOperacionBCV(opBcv);
-        } else {
-          convertirDivisa();
-        }
+        if (montoBcv !== null) document.getElementById('txtMontoBcv').value = montoBcv;
 
-        // 3. Restaurar Vista Comisión
+        const opBcv = localStorage.getItem('bcv_operacion');
+        if (opBcv) seleccionarOperacionBCV(opBcv);
+        else convertirDivisa();
+
         const montoComision = localStorage.getItem('comision_monto');
         if (montoComision !== null) {
           document.getElementById('txtMontoComision').value = montoComision;
           calcularComisionBancaria();
         }
 
-        // 4. Restaurar Vista PayPal
         const modoPaypal = localStorage.getItem('paypal_modo');
-        if (modoPaypal) {
-          cambiarModoPaypal(modoPaypal);
-        }
+        if (modoPaypal) cambiarModoPaypal(modoPaypal);
+
         const montoPaypal = localStorage.getItem('paypal_monto');
         if (montoPaypal !== null) {
           document.getElementById('txtMontoPaypal').value = montoPaypal;
           calcularPaypal();
         }
 
-        // 5. Restaurar Vista Compras (Carrito)
         const carritoGuardado = localStorage.getItem('compras_carrito');
-        if (carritoGuardado) {
-          listaCarrito = JSON.parse(carritoGuardado);
-        }
+        if (carritoGuardado) listaCarrito = JSON.parse(carritoGuardado);
 
         const igtfGuardado = localStorage.getItem('compras_igtf');
-        if (igtfGuardado !== null) {
-          document.getElementById('chkIgtf').checked = (igtfGuardado === 'true');
-        }
+        if (igtfGuardado !== null) document.getElementById('chkIgtf').checked = (igtfGuardado === 'true');
 
         const pagoGuardado = localStorage.getItem('compras_pago_cliente');
-        if (pagoGuardado !== null) {
-          document.getElementById('txtPagoCliente').value = pagoGuardado;
-        }
+        if (pagoGuardado !== null) document.getElementById('txtPagoCliente').value = pagoGuardado;
 
         actualizarCarritoUI();
       } catch (e) {
-        console.error("Error al cargar el estado guardado:", e);
+        console.error("Error al cargar estado guardado:", e);
       }
     }
 
-    // --- Lógica de Caché y Almacenamiento Local ---
     function cargarCacheOffline() {
       const cache = localStorage.getItem('cache_tasas_bcv');
       if (cache) {
@@ -729,8 +745,11 @@
           const datos = JSON.parse(cache);
           if (datos.usd) tasaUsd = parseFloat(datos.usd);
           if (datos.eur) tasaEur = parseFloat(datos.eur);
+          if (datos.usd_prev) tasaUsdAnterior = parseFloat(datos.usd_prev);
+          if (datos.eur_prev) tasaEurAnterior = parseFloat(datos.eur_prev);
+
           if (datos.fecha) {
-            document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${datos.fecha}`;
+            document.getElementById('lblFecha').innerText = `Fecha Valor BCV: ${datos.fecha}`;
           }
           actualizarTarjetasTasas();
           convertirDivisa();
@@ -740,7 +759,7 @@
         }
       } else {
         const fechaHoy = new Date().toLocaleDateString('es-VE');
-        document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${fechaHoy}`;
+        document.getElementById('lblFecha').innerText = `Fecha Valor BCV: ${fechaHoy}`;
         actualizarTarjetasTasas();
       }
     }
@@ -751,13 +770,17 @@
         .then(data => {
           if (data.usd) tasaUsd = parseFloat(data.usd);
           if (data.eur) tasaEur = parseFloat(data.eur);
+          if (data.usd_prev) tasaUsdAnterior = parseFloat(data.usd_prev);
+          if (data.eur_prev) tasaEurAnterior = parseFloat(data.eur_prev);
 
           const fechaStr = data.fecha || new Date().toLocaleDateString('es-VE');
-          document.getElementById('lblFecha').innerText = `Tasas oficiales BCV al: ${fechaStr}`;
+          document.getElementById('lblFecha').innerText = `Fecha Valor BCV: ${fechaStr}`;
 
           const objetoGuardar = {
             usd: tasaUsd,
             eur: tasaEur,
+            usd_prev: tasaUsdAnterior,
+            eur_prev: tasaEurAnterior,
             fecha: fechaStr
           };
           localStorage.setItem('cache_tasas_bcv', JSON.stringify(objetoGuardar));
@@ -769,7 +792,18 @@
         .catch(error => console.warn("Sin conexión a red. Conservando tasas en caché:", error));
     }
 
-    // --- Lógica Tema Oscuro ---
+    function actualizarTarjetasTasas() {
+      document.getElementById('valUsd').innerText = `${fmtBs.format(tasaUsd)} Bs`;
+      document.getElementById('valEur').innerText = `${fmtBs.format(tasaEur)} Bs`;
+
+      if (tasaUsdAnterior > 0) {
+        document.getElementById('valUsdPrev').innerText = `${fmtBs.format(tasaUsdAnterior)} Bs`;
+      }
+      if (tasaEurAnterior > 0) {
+        document.getElementById('valEurPrev').innerText = `${fmtBs.format(tasaEurAnterior)} Bs`;
+      }
+    }
+
     function inicializarTema() {
       const temaGuardado = localStorage.getItem('theme');
       if (temaGuardado === 'dark' || (!temaGuardado && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -788,7 +822,6 @@
       document.getElementById('btnThemeToggle').innerText = esOscuro ? '☀️' : '🌙';
     }
 
-    // --- Lógica Portapapeles ---
     function copiarTexto(elementId, btn) {
       const el = document.getElementById(elementId);
       if (!el) return;
@@ -812,11 +845,6 @@
       }, 1500);
     }
 
-    function actualizarTarjetasTasas() {
-      document.getElementById('valUsd').innerText = `${fmtBs.format(tasaUsd)} Bs`;
-      document.getElementById('valEur').innerText = `${fmtBs.format(tasaEur)} Bs`;
-    }
-
     function mostrarVista(vista) {
       localStorage.setItem('app_vista_activa', vista);
 
@@ -838,11 +866,8 @@
       const botones = ['USD_BS', 'BS_USD', 'EUR_BS', 'BS_EUR'];
       botones.forEach(id => {
         const btn = document.getElementById(`btn_${id}`);
-        if (id === op) {
-          btn.classList.add('selected-op');
-        } else {
-          btn.classList.remove('selected-op');
-        }
+        if (id === op) btn.classList.add('selected-op');
+        else btn.classList.remove('selected-op');
       });
 
       const etiquetas = {
@@ -895,9 +920,7 @@
       }
 
       let comision = monto * 0.003;
-      if (comision < 14) {
-        comision = 14.00;
-      }
+      if (comision < 14) comision = 14.00;
 
       const total = monto + comision;
 
@@ -964,7 +987,6 @@
       cardResultado.style.display = 'block';
     }
 
-    // --- Lógica Carrito de Compras / Supermercado ---
     function agregarProductoCarrito() {
       const precioInput = document.getElementById('txtPrecioProd');
       const cantInput = document.getElementById('txtCantProd');
@@ -1001,7 +1023,6 @@
     function actualizarCarritoUI() {
       const contenedor = document.getElementById('contenedorListaCarrito');
 
-      // Guardar lista y estado IGTF
       localStorage.setItem('compras_carrito', JSON.stringify(listaCarrito));
       localStorage.setItem('compras_igtf', document.getElementById('chkIgtf').checked);
 
